@@ -35,9 +35,9 @@
         </ul>
         <span id="list-information">
           <span id="number-of-patients">
-            <span class="count">4</span> patients
+            <i class="icon-user"></i> <span class="count">4</span> patients
           </span>
-          <a href="#" id="add-patient" class="button not-implemented">add a patient</a>
+          <a href="#" id="add-patient" class="button not-implemented"><i class="icon-plus"></i> add a patient</a>
         </span>
       </div>
       <ul id="patients"></ul>
@@ -236,7 +236,7 @@
       <h2><%= patient.name %></h2>
       <span class="subtitle"><%= patient.age %>-year-old male</span>
       <section>
-        <h3>Allergies</h3>
+        <h3><i class="icon-exclamation-sign"></i> Allergies</h3>
         <ul>
           <% if (patient.importantAllergies.length > 0) { %>
             <% _.each(patient.importantAllergies, function (allergy) { %>
@@ -251,7 +251,7 @@
         </ul>
       </section>
       <section>
-        <h3>Other Medications</h3>
+        <h3><i class="icon-plus-sign-alt"></i> Other Medications</h3>
         <ul>
           <% _.each(patient.otherMedications, function (medication) { %>
             <li><%= medication %></li>
@@ -259,7 +259,7 @@
         </ul>
       </section>
       <section>
-        <h3>Visit Information</h3>
+        <h3><i class="icon-ambulance"></i> Visit Information</h3>
         <ul>
           <% _.each(patient.visitInformation, function (information) { %>
             <li><%= information %></li>
@@ -267,7 +267,7 @@
         </ul>
       </section>
       <section>
-        <h3>Patient History</h3>
+        <h3><i class="icon-book"></i> Patient History</h3>
         <ul>
           <% _.each(patient.history, function (historyItem) { %>
             <li><%= historyItem %></li>
@@ -275,7 +275,7 @@
         </ul>
       </section>
       <section>
-        <h3>Demographics</h3>
+        <h3><i class="icon-home"></i> Demographics</h3>
         <ul class="demographics">
           <li>
             <span class="label">Sex</span>

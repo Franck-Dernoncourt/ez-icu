@@ -1159,6 +1159,13 @@ section#patient-list {
     section#patient-list #list-controls #sorting-options {
       float: left;
       display: block; }
+      section#patient-list #list-controls #sorting-options::before {
+        font-family: "FontAwesome";
+        display: block;
+        float: left;
+        content: "\f0c9";
+        font-size: 1.1em;
+        margin: 3px 10px 0 0; }
       section#patient-list #list-controls #sorting-options li {
         display: inline-block; }
         section#patient-list #list-controls #sorting-options li a {
@@ -1592,7 +1599,10 @@ section#information {
       line-height: 1;
       text-transform: lowercase; }
     section#information #patient-document section {
-      margin-top: 35px; }
+      margin-top: 40px; }
+    section#information #patient-document h3 i {
+      color: #5e5e5e;
+      margin-right: 4px; }
     section#information #patient-document ul {
       list-style-type: none; }
       section#information #patient-document ul li {

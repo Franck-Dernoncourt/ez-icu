@@ -166,6 +166,14 @@ section#patient-list {
     #sorting-options {
       float: left;
       display: block;
+      &::before {
+        font-family: "FontAwesome";
+        display: block;
+        float: left;
+        content: "\f0c9";
+        font-size: 1.1em;
+        margin: 3px 10px 0 0;
+      }
       li {
         display: inline-block;
         a {
@@ -694,7 +702,13 @@ section#information {
       text-transform: lowercase;
     }
     section {
-      margin-top: 35px;
+      margin-top: 40px;
+    }
+    h3 {
+      i {
+        color: lighten($information-foreground, 10%);
+        margin-right: 4px;
+      }
     }
     ul {
       list-style-type: none;
