@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <!--
+    EZ-ICU
+    6.831, Spring 2013
+    GR4
+    Kamran Khan, Robin Deits, Franck Dernoncourt, Mohammad Ghassemi
+  -->
+  <head>
+    <meta charset="utf-8">
+    <title>EZ-ICU (6.831 GR4)</title>
+    <meta name="viewport" content="width=device-width">
+
+    <script type="text/javascript" src="//use.typekit.net/lrx4grx.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+    <link rel="stylesheet" href="styles/application.css">
+    <script src="scripts/libraries/jquery.js"></script>
+    <script src="scripts/libraries/underscore.js"></script>
+    <script src="scripts/libraries/backbone.js"></script>
+    <script src="scripts/application.js"></script>
+  </head>
+  <body>
+    <div id="flash-message">That feature isn't implemented for this low-depth prototype—sorry!</div>
+    <header>
+      <h1 id="logo">EZ-ICU</h1>
+      <span class="subtitle">Medication management made easy.</span>
+      <span id="account">You are currently logged in as <span class="name">Dr. Strangelove</span></span>
+    </header>
+    <section id="patient-list">
+      <div id="list-controls">
+        <ul id="sorting-options">
+          <li><a href="#" id="sort-by-name" class="active">Sort by name</a></li>
+          <li><a href="#" id="sort-by-bed">Sort by bed</a></li>
+        </ul>
+        <span id="list-information">
+          <span id="number-of-patients">
+            <span class="count">4</span> patients
+          </span>
+          <a href="#" id="add-patient" class="button not-implemented">add a patient</a>
+        </span>
+      </div>
+      <ul id="patients"></ul>
+    </section>
+    <section id="information">
+      <div id="document-a"></div><div id="document-b"></div>
+      <div id="document">
+        <div id="patient-document"></div>
+        <div id="empty">
+          <span id="no-patient-selected">
+            <strong>Select a patient</strong> and his or her medical background will appear here
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <script type="text/html" id="list-item-template">
+      <div class="listing">
+        <div class="portrait">
+          <img src="images/patients/<%= patient.portraitFilename %>" alt="" />
+        </div>
+        <h2 class="name"><strong><%= patient.lastName() %></strong>, <%= patient.firstName() %></h2>
+        <span class="bed">
+          Bed <span class="bed-number"><%= patient.bed %></span>
+        </span>
+        <span class="status">
+          Next dosage <em><%= patient.nextDosage %></em>
+          <span class="light <%= patient.status %>"><%= patient.status %></span>
+        </span>
+      </div>
+      <div class="medication">
+        <ul class="medication-tabs">
+          <li><a href="#" data-tab="overview">Overview</a></li>
+          <li><a href="#" data-tab="prescription">Prescriptions</a></li>
+          <li><a href="#" data-tab="administration">Administration</a></li>
+        </ul>
+        <div class="medication-content">
+          <div class="overview">
+            <div class="vitals panel">
+              <h3>Vitals</h3>
+
+              <h4>Blood pressure</h4>
+              <span class="numerator">140</span>
+              <span class="over">/</span>
+              <span class="denominator">90</span>
+
+              <h4>Pulse</h4>
+              <span class="number">84</span>
+              <span class="label">bpm</span>
+            </div>
+            <div class="prescriptions panel">
+              <h3>Prescriptions</h3>
+              <ul>
+                <% _.each(patient.prescriptions, function (prescription) { %>
+                  <li>
+                    <h4><%= prescription.medication %> <em><%= prescription.dosage %></em></h4>
+                    <span class="additional"><%= prescription.frequency %></span>
+                  </li>
+                <% }) %>
+              </ul>
+            </div>
+            <div class="administration panel">
+              <h3>Administration</h3>
+              <ol>
+                <% _.each(patient.dosages, function (dosage) { %>
+                  <li <% if (dosage.done) print('class="done"') %>>
+                    <h4><%= dosage.medication %></h4>
+                    <span class="additional"><%= dosage.dosage %>, <%= dosage.scheduledTime %></span>
+                  </li>
+                <% }) %>
+              </ol>
+            </div>
+          </div>
+          <div class="prescription">
+            <table class="prescriptions">
+              <thead>
+                <tr>
+                  <th>Medication</th>
+                  <th>Dosage</th>
+                  <th>Frequency</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="new-template new">
+                  <td>
+                    <div class="medication-input input">
+                      <input type="text" placeholder="Medication" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="dosage-input input">
+                      <input type="text" placeholder="Dosage" />
+                      <span class="post">mg</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="frequency-input select-input">
+                      <select>
+                        <option>Every hour</option>
+                        <option>Every 2 hours</option>
+                        <option>Every 3 hours</option>
+                        <option>Every 4 hours</option>
+                        <option>Every 6 hours</option>
+                        <option>Every 12 hours</option>
+                        <option>Every 24 hours</option>
+                        <option>Other…</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="start-input input">
+                      <input type="text" placeholder="Start" class="date-time-picker-input" />
+                      <div class="date-time-picker">
+                        <p>
+                          A date-time picker defaulting to <em>now</em> will be present here
+                          (not yet implemented).
+                        </p>
+                        <p>
+                          The form would also indicate the number of doses that the time range yields.
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="end-input input">
+                      <input type="text" placeholder="End" class="date-time-picker-input" />
+                      <div class="date-time-picker">
+                        <p>
+                          A date-time picker defaulting to <em>now</em> will be present here
+                          (not yet implemented).
+                        </p>
+                        <p>
+                          The form would also indicate the number of doses that the time range yields.
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="#" class="ok not-implemented"></a>
+                    <a href="#" class="remove remove-new"></a>
+                  </td>
+                </tr>
+                <% _.each(patient.prescriptions, function (prescription) { %>
+                  <tr>
+                    <td><%= prescription.medication %></td>
+                    <td><%= prescription.dosage %></td>
+                    <td><%= prescription.frequency %></td>
+                    <td><%= prescription.start %></td>
+                    <td><%= prescription.end %></td>
+                    <td>
+                      <a href="#" class="edit not-implemented"></a>
+                      <a href="#" class="remove not-implemented"></a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <a href="#" class="add-prescription button">Add prescription</a>
+          </div>
+          <div class="administration">
+            <table class="dosages">
+              <thead>
+                <tr>
+                  <th>Medication</th>
+                  <th>Dosage</th>
+                  <th>Scheduled Time</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              <% _.each(patient.dosages, function (dosage) { %>
+                <tr <% if (dosage.done) print('class="done"') %>>
+                  <td><%= dosage.medication %></td>
+                  <td><%= dosage.dosage %></td>
+                  <td><%= dosage.scheduledTime %></td>
+                  <td>
+                    <a href="#" class="done button">Done</a>
+                    <a href="#" class="undo">Undo</a>
+                  </td>
+                </tr>
+              <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/html" id="patient-document-template">
+      <div class="portrait">
+        <img src="images/patients/<%= patient.portraitFilename %>" alt="" />
+      </div>
+      <h2><%= patient.name %></h2>
+      <span class="subtitle"><%= patient.age %>-year-old male</span>
+      <section>
+        <h3>Allergies</h3>
+        <ul>
+          <% if (patient.importantAllergies.length > 0) { %>
+            <% _.each(patient.importantAllergies, function (allergy) { %>
+              <li class="important">Patient allergic to <%= allergy %></li>
+            <% }) %>
+          <% } else { %>
+            <li class="unimportant">No known allergies to medication</li>
+          <% } %>
+          <% _.each(patient.allergies, function (allergy) { %>
+            <li>Patient allergic to <%= allergy %></li>
+          <% }) %>
+        </ul>
+      </section>
+      <section>
+        <h3>Other Medications</h3>
+        <ul>
+          <% _.each(patient.otherMedications, function (medication) { %>
+            <li><%= medication %></li>
+          <% }) %>
+        </ul>
+      </section>
+      <section>
+        <h3>Visit Information</h3>
+        <ul>
+          <% _.each(patient.visitInformation, function (information) { %>
+            <li><%= information %></li>
+          <% }) %>
+        </ul>
+      </section>
+      <section>
+        <h3>Patient History</h3>
+        <ul>
+          <% _.each(patient.history, function (historyItem) { %>
+            <li><%= historyItem %></li>
+          <% }) %>
+        </ul>
+      </section>
+      <section>
+        <h3>Demographics</h3>
+        <ul class="demographics">
+          <li>
+            <span class="label">Sex</span>
+            <span class="data"><%= patient.sex %></span>
+          </li>
+          <li>
+            <span class="label">Age</span>
+            <span class="data"><%= patient.age %> years</span>
+          </li>
+          <li>
+            <span class="label">Ethnicity</span>
+            <span class="data"><%= patient.ethnicity %></span>
+          </li>
+          <li>
+            <span class="label">Address</span>
+            <span class="data"><%= patient.address %></span>
+          </li>
+        </ul>
+      </section>
+    </script>
+  </body>
+</html>

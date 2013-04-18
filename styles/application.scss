@@ -1,0 +1,793 @@
+@import "bourbon/bourbon";
+@import "icons/icons";
+
+// Color palette:
+$header-bar-background: #565e6a;
+$header-bar-foreground: #a9adb4;
+$patient-list-background: #2b2f35;
+$patient-list-foreground: #848b94;
+$information-background: #f5f5f5;
+$information-foreground: #444;
+$medication-background: lighten($patient-list-background, 50%);
+$medication-foreground: #333;
+$accent-color: #eaaf3a;
+$ok: #49823e;
+$warning: #eaaf3a;
+$alert: #8a2a2a;
+
+// Layout:
+$header-bar-height: 50px;
+$information-pane-width: 15%;
+$information-pane-selected-width: 30%;
+
+// Miscellaneous:
+$document-margin: 5px;
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "freight-sans-pro", sans-serif;
+  @include box-sizing(border-box);
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-width: 960px;
+  min-height: 500px;
+  position: relative;
+}
+body {
+  font-size: 1.2em;
+  .button {
+    display: inline-block;
+    @include linear-gradient(rgba(#fff, 0.1), rgba(#000, 0.1), $fallback: $accent-color);
+    color: lighten($accent-color, 90%);
+    @include border-radius(4px);
+    padding: 3px 7px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9em;
+    box-shadow: inset 0 1px 0 lighten($accent-color, 20%), 0 2px 1px rgba(#000, 0.3);
+    text-shadow: 0 -1px darken($accent-color, 20%);
+    @include transition(all 0.2s ease-in-out);
+    &:hover {
+      @include linear-gradient(darken($accent-color, 0%), darken($accent-color, 10%));
+    }
+    &:active {
+      @include linear-gradient(darken($accent-color, 15%), darken($accent-color, 5%));
+    }
+    &.secondary {
+      color: lighten($header-bar-background, 90%);
+      background-color: $header-bar-background;
+      box-shadow: inset 0 1px 0 lighten($header-bar-background, 20%), 0 2px 1px rgba(#000, 0.3);
+      text-shadow: 0 -1px darken($header-bar-background, 20%);
+      &:hover {
+        @include linear-gradient(darken($header-bar-background, 0%), darken($header-bar-background, 10%));
+      }
+      &:active {
+        @include linear-gradient(darken($header-bar-background, 15%), darken($header-bar-background, 5%));
+      }
+    }
+  }
+  #flash-message {
+    background: green;
+    height: 40px;
+    padding: 0 15px;
+    line-height: 40px;
+    position: absolute;
+    text-align: center;
+    width: 60%;
+    left: 20%;
+    top: 0;
+    z-index: 100;
+    background: $accent-color;
+    @include border-radius(0 0 5px 5px);
+    box-shadow: 0 0 20px rgba(#000, 0.5);
+    text-shadow: 0 1px 0 lighten($accent-color, 25%);
+    font-size: 0.9em;
+    font-weight: 600;
+    display: none;
+  }
+}
+
+header {
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  width: 100%;
+  height: $header-bar-height;
+  line-height: $header-bar-height;
+  color: $header-bar-foreground;
+  @include linear-gradient(lighten($header-bar-background, 5%), darken($header-bar-background, 5%));
+  box-shadow: 0 0 10px rgba(#000, 0.4);
+  padding: 0 15px;
+  #logo {
+    color: $header-bar-foreground;
+    text-decoration: none;
+    font-size: 1.7em;
+    display: block;
+    float: left;
+    text-shadow: 0 -1px lighten($header-bar-foreground, 20%), 0 1px darken($header-bar-foreground, 50%);
+    letter-spacing: 0.1em;
+  }
+  .subtitle {
+    float: left;
+    display: block;
+    margin-left: 10px;
+    font-size: 0.8em;
+    text-shadow: 0 1px darken($header-bar-foreground, 50%);
+  }
+  #account {
+    display: block;
+    float: right;
+    text-shadow: 0 1px darken($header-bar-foreground, 50%);
+    .name {
+      font-weight: 700;
+      background: rgba(#000, 0.1);
+      display: inline-block;
+      vertical-align: baseline;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
+      @include border-radius(30px);
+      &::before {
+        content: "\f0f1";
+        font-family: "FontAwesome";
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+section#patient-list, section#information {
+  @include transition(all 0.2s ease-in-out);
+}
+
+section#patient-list {
+  position: absolute;
+  top: $header-bar-height;
+  bottom: 0;
+  left: 0;
+  width: 100% - $information-pane-width;
+  background: darken($patient-list-background, 0%);
+  color: $patient-list-foreground;
+  overflow: auto;
+  text-shadow: 0 -1px 0 darken($patient-list-background, 30%);
+  #list-controls {
+    font-size: 0.9em;
+    overflow: hidden;
+    padding: 15px (15px + $document-margin * 2) 15px 15px;
+    box-shadow: inset 0 -7px 7px rgba(#000, 0.2);
+    #sorting-options {
+      float: left;
+      display: block;
+      li {
+        display: inline-block;
+        a {
+          color: $patient-list-foreground;
+          padding: 0 10px;
+          vertical-align: baseline;
+          height: 25px;
+          line-height: 25px;
+          &.active {
+            background: rgba(#fff, 0.1);
+            @include border-radius(30px);
+            text-decoration: none;
+          }
+        }
+      }
+    }
+    #list-information {
+      display: block;
+      float: right;
+      a {
+        margin-left: 10px;
+      }
+    }
+  }
+  #patients {
+    background: lighten($patient-list-background, 3%);
+    list-style-type: none;
+    box-shadow: 0 7px 7px rgba(#000, 0.2);
+    & > li {
+      padding: 15px (15px + $document-margin * 2) 15px 15px;
+      border-bottom: 1px solid darken($patient-list-background, 3%);
+      border-top: 1px solid lighten($patient-list-background, 10%);
+      &:hover {
+        background: darken($patient-list-background, 0%);
+        box-shadow: inset 0 -1px 0 lighten($patient-list-background, 3%),
+          inset 0 1px 0 darken($patient-list-background, 10%),
+          inset 0 25px 25px darken($patient-list-background, 1%),
+          inset 0 -25px 25px darken($patient-list-background, 1%);
+      }
+      &.active {
+        background: darken($patient-list-background, 5%);
+        box-shadow: inset 0 -1px 0 lighten($patient-list-background, 10%),
+          inset 0 1px 0 darken($patient-list-background, 10%),
+          inset 0 25px 25px darken($patient-list-background, 8%),
+          inset 0 -25px 25px darken($patient-list-background, 8%);
+        border: none;
+        .medication {
+          // max-height: 500px;
+          display: block;
+          margin-bottom: 15px;
+        }
+      }
+      .listing {
+        overflow: hidden;
+        padding: 10px 25px 10px 10px;
+        cursor: pointer;
+        .portrait {
+          display: block;
+          float: left;
+          margin-right: 20px;
+          position: relative;
+          $portrait-size: 55px;
+          width: $portrait-size;
+          height: $portrait-size;
+          @include border-radius($portrait-size);
+          box-shadow: 0 1px 1px lighten($patient-list-background, 30%),
+            0 -1px 1px darken($patient-list-background, 50%);
+          overflow: hidden;
+          &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 10px 10px rgba(#000, 0.5);
+          }
+          img {
+            width: $portrait-size;
+            height: $portrait-size;
+          }
+        }
+        .name {
+          font-size: 1.7em;
+          line-height: 1.7;
+          color: lighten($patient-list-foreground, 30%);
+          display: block;
+          float: left;
+          font-weight: 500;
+          strong {
+            font-weight: 700;
+          }
+        }
+        .bed {
+          display: block;
+          float: right;
+          text-transform: uppercase;
+          line-height: 1;
+          width: 90px;
+          text-align: right;
+          .bed-number {
+            font-size: 2em;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 5px;
+          }
+        }
+        .status {
+          display: block;
+          float: right;
+          line-height: 1;
+          line-height: 56px;
+          color: rgba($patient-list-foreground, 0.6);
+          margin-left: 10px;
+          em {
+            font-weight: 600;
+            font-size: 1.1em;
+            font-style: normal;
+            color: $patient-list-foreground;
+            &::before {
+              content: "\f017";
+              font-family: "FontAwesome";
+              margin: 0 4px;
+              font-size: 0.8em;
+              color: rgba($patient-list-foreground, 0.6);
+            }
+          }
+          .light {
+            font-size: 2em;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 5px;
+            text-indent: -9999em;
+            display: inline-block;
+            $light-size: 15px;
+            width: $light-size;
+            height: $light-size;
+            @include border-radius($light-size);
+            box-shadow: 0 1px 1px lighten($patient-list-background, 30%),
+              0 -1px 1px darken($patient-list-background, 50%);
+            &.ok {
+              @include linear-gradient(lighten($ok, 10%), darken($ok, 10%));
+            }
+            &.warning {
+              @include linear-gradient(lighten($warning, 10%), darken($warning, 10%));
+            }
+            &.alert {
+              @include linear-gradient(lighten($alert, 10%), darken($alert, 10%));
+            }
+          }
+        }
+      }
+      .medication {
+        @include transition(max-height 0.2s ease-in-out, margin 0.1s ease-in-out);
+        margin: 0 15px;
+        text-shadow: 0 1px 0 lighten($medication-background, 10%);
+        &::after {
+          content: "";
+          display: block;
+          clear: left;
+        }
+        .medication-tabs {
+          list-style-type: none;
+          padding-left: 60px;
+          &::after {
+            content: "";
+            display: block;
+            clear: left;
+          }
+          li {
+            display: block;
+            float: left;
+            a {
+              display: block;
+              z-index: 10;
+              float: left;
+              position: relative;
+              background: darken($accent-color, 10%);
+              color: lighten($accent-color, 90%);
+              text-decoration: none;
+              font-weight: 600;
+              font-size: 1em;
+              text-transform: uppercase;
+              padding: 5px 10px;
+              text-shadow: 0 -1px 0 darken($accent-color, 30%);
+              margin-left: 10px;
+              top: 10px;
+              @include border-radius(3px 3px 0 0);
+              box-shadow: inset 0 1px 0 lighten($accent-color, 20%), inset 0 -7px 7px rgba(#000, 0.2);
+              &:hover {
+                padding-bottom: 8px;
+                top: 7px;
+              }
+              &.active {
+                background: $medication-background;
+                box-shadow: inset 0 1px 0 lighten($medication-background, 20%);
+                color: $medication-foreground;
+                text-shadow: 0 1px 0 lighten($medication-background, 10%);
+                padding: 10px 15px;
+                top: 1px;
+              }
+            }
+            &:first-child a {
+              background: darken($medication-background, 10%);
+              color: lighten($medication-background, 90%);
+              text-shadow: 0 -1px 0 darken($medication-background, 30%);
+              box-shadow: inset 0 1px 0 lighten($medication-background, 20%), inset 0 -7px 7px rgba(#000, 0.2);
+              &.active {
+                background: $medication-background;
+                box-shadow: inset 0 1px 0 lighten($medication-background, 20%);
+                color: $medication-foreground;
+                text-shadow: 0 1px 0 lighten($medication-background, 10%);
+                padding: 10px 15px;
+                top: 1px;
+              }
+            }
+          }
+        }
+        .medication-content {
+          position: relative;
+          z-index: 5;
+          background: $medication-background;
+          color: $medication-foreground;
+          @include border-radius(3px);
+          padding: 15px;
+          box-shadow: inset 0 1px 0 lighten($medication-background, 20%), 0 0 20px rgba(#000, 0.5);
+          & > div {
+            display: none;
+          }
+          .overview {
+            padding: 20px;
+            &::after {
+              content: "";
+              display: block;
+              clear: left;
+            }
+            .panel {
+              float: left;
+              line-height: 1;
+              h4 {
+                line-height: 1;
+                margin: 12px 0 0;
+                font-size: 0.9em;
+              }
+              li.done {
+                font-style: italic;
+                opacity: 0.5;
+                list-style-type: none;
+                &::before {
+                  content: "\f00c";
+                  display: block;
+                  float: left;
+                  font-family: "FontAwesome";
+                  margin: 0 5px 0 -25px;
+                }
+              }
+              &.vitals {
+                width: 28%;
+              }
+              &.prescriptions {
+                width: 36%;
+              }
+              &.administration {
+                width: 36%;
+              }
+            }
+          }
+          .prescription {
+            text-align: center;
+            table.prescriptions {
+              text-align: left;
+              width: 100%;
+              border-spacing: 0;
+              th {
+                border-bottom: 1px solid darken($medication-background, 10%);
+                padding-bottom: 5px;
+              }
+              td {
+                padding: 7px 0;
+                border-bottom: 1px solid darken($medication-background, 10%);
+                border-top: 1px solid lighten($medication-background, 10%);
+                line-height: 1;
+                &:last-child {
+                  text-align: right;
+                }
+                em {
+                  display: block;
+                  color: rgba($medication-foreground, 0.7);
+                  font-size: 0.8em;
+                  text-align: left;
+                }
+                a {
+                  display: inline-block;
+                  text-decoration: none;
+                  &::after {
+                    font-family: "FontAwesome";
+                    text-decoration: none;
+                    font-size: 1.1em;
+                    color: rgba($medication-foreground, 0.5);
+                    @include border-radius(100px);
+                    padding: 4px;
+                    margin-right: 4px;
+                  }
+                  &:hover::after {
+                    background: rgba(#000, 0.1);
+                    color: rgba($medication-foreground, 0.8);
+                  }
+                  &.edit {
+                    &::after {
+                      content: "\f040";
+                    }
+                  }
+                  &.ok {
+                    &::after {
+                      content: "\f00c";
+                    }
+                  }
+                  &.remove {
+                    &::after {
+                      content: "\f00d";
+                    }
+                  }
+                }
+              }
+              tr {
+                &:last-child {
+                  td {
+                    border-bottom: none;
+                  }
+                }
+                &.new-template {
+                  display: none;
+                }
+                &.new {
+                  .select-input {
+                    margin-right: 15px;
+                  }
+                  .input {
+                    position: relative;
+                    background: $information-background;
+                    height: 30px;
+                    line-height: 30px;
+                    margin-right: 15px;
+                    padding: 0 5px;
+                    border: 1px solid darken($medication-background, 10%);
+                    @include border-radius(3px);
+                    box-shadow: inset 0 2px 1px rgba(#000, 0.2);
+                    .post {
+                      font-size: 0.7em;
+                      font-weight: 600;
+                    }
+                    input {
+                      border: none;
+                      background: transparent;
+                      height: 30px;
+                      line-height: 30px;
+                      font-size: 1em;
+                      width: 95%;
+                      &:focus {
+                        outline: none;
+                        border: none;
+                      }
+                    }
+                    &.dosage-input input { width: 60%; }
+                    .date-time-picker {
+                      position: absolute;
+                      background: $information-background;
+                      text-shadow: 0 1px 0 lighten($information-background, 50%);
+                      @include border-radius(3px);
+                      top: 32px;
+                      width: 200px;
+                      line-height: 1;
+                      font-size: 0.9em;
+                      padding: 10px;
+                      box-shadow: 0 0 15px rgba(#000, 0.4);
+                      display: none;
+                      p {
+                        margin-bottom: 15px;
+                        &:last-child {
+                          margin-bottom: 0;
+                        }
+                      }
+                      em {
+                        font-size: 1em;
+                        display: inline;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            .button {
+              margin: 10px auto 0;
+            }
+          }
+          .administration {
+            table.dosages {
+              width: 100%;
+              border-spacing: 0;
+              td:last-child, th:last-child {
+                width: 75px;
+                text-align: center;
+              }
+              th {
+                border-bottom: 1px solid darken($medication-background, 10%);
+                padding-bottom: 5px;
+              }
+              td {
+                padding: 7px 0;
+                border-bottom: 1px solid darken($medication-background, 10%);
+                border-top: 1px solid lighten($medication-background, 10%);
+                .undo {
+                  display: none;
+                  color: rgba($medication-foreground, 0.5);
+                }
+              }
+              tr {
+                &:last-child {
+                  td {
+                    border-bottom: none;
+                  }
+                }
+                &.done {
+                  color: rgba($medication-foreground, 0.5);
+                  .undo {
+                    display: inline-block;
+                  }
+                  .done {
+                    display: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+section#information {
+  position: absolute;
+  top: $header-bar-height;
+  bottom: 0;
+  right: 0;
+  $document-padding: 30px;
+  width: $information-pane-width;
+  color: $information-foreground;
+  #document {
+    z-index: 20;
+    position: absolute;
+    top: $document-margin * 2;
+    right: 0;
+    bottom: $document-margin * 2;
+    left: -$document-margin * 2;
+    border-top: 1px solid lighten($information-background, 100%);
+    padding: $document-padding;
+    overflow: auto;
+  }
+  #document-a, #document-b, #document {
+    background: $information-background;
+    box-shadow: inset 0 0 50px rgba(#000, 0.2), 0 0 5px rgba(#000, 0.4);
+  }
+  #document-a, #document-b {
+    display: block;
+    position: absolute;
+    z-index: 10;
+  }
+  #document-a {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: darken($information-background, 30%);
+  }
+  #document-b {
+    top: $document-margin;
+    left: -$document-margin;
+    right: 0;
+    bottom: $document-margin;
+    background: darken($information-background, 10%);
+    border-top: 1px solid darken($information-background, 5%);
+  }
+  #patient-document {
+    display: none;
+    text-shadow: 0 1px 0 lighten($information-background, 90%);
+    .portrait {
+      display: block;
+      margin: 0 auto 10px;
+      position: relative;
+      $portrait-size: 200px;
+      width: $portrait-size;
+      height: $portrait-size;
+      @include border-radius($portrait-size);
+      box-shadow: 0 1px 1px lighten($information-background, 30%),
+        0 -1px 1px darken($information-background, 50%),
+        0 0 15px darken($information-background, 20%);
+      overflow: hidden;
+      &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0 0 10px 10px rgba(#000, 0.5);
+      }
+      img {
+        width: $portrait-size;
+        height: $portrait-size;
+      }
+    }
+    h2 {
+      font-size: 2em;
+      text-align: center;
+      line-height: 1;
+    }
+    .subtitle {
+      display: block;
+      text-align: center;
+      font-size: 1.3em;
+      color: lighten($information-foreground, 40%);
+      line-height: 1;
+      text-transform: lowercase;
+    }
+    section {
+      margin-top: 35px;
+    }
+    ul {
+      list-style-type: none;
+      li {
+        border-top: 1px solid lighten($information-background, 90%);
+        border-bottom: 1px solid darken($information-background, 10%);
+        overflow: hidden;
+        padding: 10px 0;
+        line-height: 1;
+        &.important {
+          font-weight: 600;
+          color: #900;
+        }
+        &.unimportant {
+          font-weight: 600;
+          color: #070;
+        }
+        em {
+          font-size: 0.9em;
+          color: #999;
+          display: block;
+        }
+        &:first-child {
+          border-top: none;
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+        .label {
+          width: 80px;
+          display: block;
+          float: left;
+          font-weight: 600;
+          clear: left;
+          line-height: 1;
+          text-align: right;
+        }
+        .data {
+          margin-left: 80px;
+          padding-left: 15px;
+          display: block;
+          line-height: 1;
+        }
+      }
+    }
+  }
+  #empty {
+    display: table;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    @include box-sizing(content-box);
+    padding: $document-padding;
+    z-index: -1;
+    opacity: 1;
+    @include transition(opacity 0.2s ease-in-out);
+    #no-patient-selected {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      margin-top: 100px;
+      line-height: 1.2;
+      font-size: 1em;
+      color: darken($information-background, 15%);
+      text-shadow: 0 1px 0 lighten($information-background, 75%);
+      &::before {
+        content: "\f112";
+        font-family: "FontAwesome";
+        display: block;
+        font-size: 3em;
+        color: darken($information-background, 10%);
+      }
+      strong {
+        display: block;
+        font-weight: 500;
+        font-size: 2em;
+        line-height: 0.8;
+        margin-bottom: 15px;
+      }
+    }
+  }
+}
+
+body.patient-selected {
+  section#patient-list {
+    width: 100% - $information-pane-selected-width;
+  }
+  section#information {
+    width: $information-pane-selected-width;
+    #empty {
+      opacity: 0;
+    }
+  }
+}

@@ -1,0 +1,1674 @@
+/*
+ *  Font Awesome 3.0.2
+ *  the iconic font designed for use with Twitter Bootstrap
+ *  -------------------------------------------------------
+ *  The full suite of pictographic icons, examples, and documentation
+ *  can be found at: http://fortawesome.github.com/Font-Awesome/
+ *
+ *  License
+ *  -------------------------------------------------------
+ *  - The Font Awesome font is licensed under the SIL Open Font License - http://scripts.sil.org/OFL
+ *  - Font Awesome CSS, LESS, and SASS files are licensed under the MIT License -
+ *    http://opensource.org/licenses/mit-license.html
+ *  - The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
+ *  - Attribution is no longer required in Font Awesome 3.0, but much appreciated:
+ *    "Font Awesome by Dave Gandy - http://fortawesome.github.com/Font-Awesome"
+ *
+ *  Contact
+ *  -------------------------------------------------------
+ *  Email: dave@davegandy.com
+ *  Twitter: http://twitter.com/fortaweso_me
+ *  Work: Lead Product Designer @ http://kyruus.com
+ */
+@font-face {
+  font-family: 'FontAwesome';
+  src: url("icons/font/fontawesome-webfont.eot?v=3.0.1");
+  src: url("icons/font/fontawesome-webfont.eot?#iefix&v=3.0.1") format("embedded-opentype"), url("icons/font/fontawesome-webfont.woff?v=3.0.1") format("woff"), url("icons/font/fontawesome-webfont.ttf?v=3.0.1") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+/*  Font Awesome styles
+    ------------------------------------------------------- */
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  /* sprites.less reset */
+  display: inline;
+  width: auto;
+  height: auto;
+  line-height: normal;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+  margin-top: 0; }
+
+/* more sprites.less reset */
+.icon-white,
+.nav-pills > .active > a > [class^="icon-"],
+.nav-pills > .active > a > [class*=" icon-"],
+.nav-list > .active > a > [class^="icon-"],
+.nav-list > .active > a > [class*=" icon-"],
+.navbar-inverse .nav > .active > a > [class^="icon-"],
+.navbar-inverse .nav > .active > a > [class*=" icon-"],
+.dropdown-menu > li > a:hover > [class^="icon-"],
+.dropdown-menu > li > a:hover > [class*=" icon-"],
+.dropdown-menu > .active > a > [class^="icon-"],
+.dropdown-menu > .active > a > [class*=" icon-"],
+.dropdown-submenu:hover > a > [class^="icon-"],
+.dropdown-submenu:hover > a > [class*=" icon-"] {
+  background-image: none; }
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  text-decoration: inherit;
+  display: inline-block;
+  speak: none; }
+
+/* makes sure icons active on rollover in links */
+a [class^="icon-"],
+a [class*=" icon-"] {
+  display: inline-block; }
+
+/* makes the font 33% larger relative to the icon container */
+.icon-large:before {
+  vertical-align: -10%;
+  font-size: 1.3333333333333333em; }
+
+.btn [class^="icon-"],
+.btn [class*=" icon-"], .nav [class^="icon-"],
+.nav [class*=" icon-"] {
+  display: inline;
+  /* keeps button heights with and without icons the same */ }
+  .btn [class^="icon-"].icon-large,
+  .btn [class*=" icon-"].icon-large, .nav [class^="icon-"].icon-large,
+  .nav [class*=" icon-"].icon-large {
+    line-height: .9em; }
+  .btn [class^="icon-"].icon-spin,
+  .btn [class*=" icon-"].icon-spin, .nav [class^="icon-"].icon-spin,
+  .nav [class*=" icon-"].icon-spin {
+    display: inline-block; }
+
+.nav-tabs [class^="icon-"],
+.nav-tabs [class*=" icon-"], .nav-pills [class^="icon-"],
+.nav-pills [class*=" icon-"] {
+  /* keeps button heights with and without icons the same */ }
+  .nav-tabs [class^="icon-"], .nav-tabs [class^="icon-"].icon-large,
+  .nav-tabs [class*=" icon-"],
+  .nav-tabs [class*=" icon-"].icon-large, .nav-pills [class^="icon-"], .nav-pills [class^="icon-"].icon-large,
+  .nav-pills [class*=" icon-"],
+  .nav-pills [class*=" icon-"].icon-large {
+    line-height: .9em; }
+
+li [class^="icon-"],
+li [class*=" icon-"], .nav li [class^="icon-"],
+.nav li [class*=" icon-"] {
+  display: inline-block;
+  width: 1.25em;
+  text-align: center; }
+  li [class^="icon-"].icon-large,
+  li [class*=" icon-"].icon-large, .nav li [class^="icon-"].icon-large,
+  .nav li [class*=" icon-"].icon-large {
+    /* increased font size for icon-large */
+    width: 1.5625em; }
+
+ul.icons {
+  list-style-type: none;
+  text-indent: -.75em; }
+  ul.icons li [class^="icon-"],
+  ul.icons li [class*=" icon-"] {
+    width: .75em; }
+
+.icon-muted {
+  color: #eeeeee; }
+
+.icon-border {
+  border: solid 1px #eeeeee;
+  padding: 0.2em 0.25em 0.15em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+
+.icon-2x {
+  font-size: 2em; }
+  .icon-2x.icon-border {
+    border-width: 2px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px; }
+
+.icon-3x {
+  font-size: 3em; }
+  .icon-3x.icon-border {
+    border-width: 3px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px; }
+
+.icon-4x {
+  font-size: 4em; }
+  .icon-4x.icon-border {
+    border-width: 4px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px; }
+
+.pull-right {
+  float: right; }
+
+.pull-left {
+  float: left; }
+
+[class^="icon-"].pull-left,
+[class*=" icon-"].pull-left {
+  margin-right: .3em; }
+[class^="icon-"].pull-right,
+[class*=" icon-"].pull-right {
+  margin-left: .3em; }
+
+.btn [class^="icon-"].pull-left.icon-2x, .btn [class^="icon-"].pull-right.icon-2x,
+.btn [class*=" icon-"].pull-left.icon-2x,
+.btn [class*=" icon-"].pull-right.icon-2x {
+  margin-top: .18em; }
+.btn [class^="icon-"].icon-spin.icon-large,
+.btn [class*=" icon-"].icon-spin.icon-large {
+  line-height: .8em; }
+
+.btn.btn-small [class^="icon-"].pull-left.icon-2x, .btn.btn-small [class^="icon-"].pull-right.icon-2x,
+.btn.btn-small [class*=" icon-"].pull-left.icon-2x,
+.btn.btn-small [class*=" icon-"].pull-right.icon-2x {
+  margin-top: .25em; }
+
+.btn.btn-large [class^="icon-"],
+.btn.btn-large [class*=" icon-"] {
+  margin-top: 0; }
+  .btn.btn-large [class^="icon-"].pull-left.icon-2x, .btn.btn-large [class^="icon-"].pull-right.icon-2x,
+  .btn.btn-large [class*=" icon-"].pull-left.icon-2x,
+  .btn.btn-large [class*=" icon-"].pull-right.icon-2x {
+    margin-top: .05em; }
+  .btn.btn-large [class^="icon-"].pull-left.icon-2x,
+  .btn.btn-large [class*=" icon-"].pull-left.icon-2x {
+    margin-right: .2em; }
+  .btn.btn-large [class^="icon-"].pull-right.icon-2x,
+  .btn.btn-large [class*=" icon-"].pull-right.icon-2x {
+    margin-left: .2em; }
+
+.icon-spin {
+  display: inline-block;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear; }
+
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg); }
+
+  100% {
+    -moz-transform: rotate(359deg); } }
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg); }
+
+  100% {
+    -webkit-transform: rotate(359deg); } }
+
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotate(0deg); }
+
+  100% {
+    -o-transform: rotate(359deg); } }
+
+@-ms-keyframes spin {
+  0% {
+    -ms-transform: rotate(0deg); }
+
+  100% {
+    -ms-transform: rotate(359deg); } }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+
+  100% {
+    transform: rotate(359deg); } }
+
+@-moz-document url-prefix() {
+  .icon-spin {
+    height: .9em; }
+
+  .btn .icon-spin {
+    height: auto; }
+
+  .icon-spin.icon-large {
+    height: 1.25em; }
+
+  .btn .icon-spin.icon-large {
+    height: .75em; } }
+
+/*  Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+    readers do not read off random characters that represent icons */
+.icon-glass:before {
+  content: "\f000"; }
+
+.icon-music:before {
+  content: "\f001"; }
+
+.icon-search:before {
+  content: "\f002"; }
+
+.icon-envelope:before {
+  content: "\f003"; }
+
+.icon-heart:before {
+  content: "\f004"; }
+
+.icon-star:before {
+  content: "\f005"; }
+
+.icon-star-empty:before {
+  content: "\f006"; }
+
+.icon-user:before {
+  content: "\f007"; }
+
+.icon-film:before {
+  content: "\f008"; }
+
+.icon-th-large:before {
+  content: "\f009"; }
+
+.icon-th:before {
+  content: "\f00a"; }
+
+.icon-th-list:before {
+  content: "\f00b"; }
+
+.icon-ok:before {
+  content: "\f00c"; }
+
+.icon-remove:before {
+  content: "\f00d"; }
+
+.icon-zoom-in:before {
+  content: "\f00e"; }
+
+.icon-zoom-out:before {
+  content: "\f010"; }
+
+.icon-off:before {
+  content: "\f011"; }
+
+.icon-signal:before {
+  content: "\f012"; }
+
+.icon-cog:before {
+  content: "\f013"; }
+
+.icon-trash:before {
+  content: "\f014"; }
+
+.icon-home:before {
+  content: "\f015"; }
+
+.icon-file:before {
+  content: "\f016"; }
+
+.icon-time:before {
+  content: "\f017"; }
+
+.icon-road:before {
+  content: "\f018"; }
+
+.icon-download-alt:before {
+  content: "\f019"; }
+
+.icon-download:before {
+  content: "\f01a"; }
+
+.icon-upload:before {
+  content: "\f01b"; }
+
+.icon-inbox:before {
+  content: "\f01c"; }
+
+.icon-play-circle:before {
+  content: "\f01d"; }
+
+.icon-repeat:before {
+  content: "\f01e"; }
+
+/* \f020 doesn't work in Safari. all shifted one down */
+.icon-refresh:before {
+  content: "\f021"; }
+
+.icon-list-alt:before {
+  content: "\f022"; }
+
+.icon-lock:before {
+  content: "\f023"; }
+
+.icon-flag:before {
+  content: "\f024"; }
+
+.icon-headphones:before {
+  content: "\f025"; }
+
+.icon-volume-off:before {
+  content: "\f026"; }
+
+.icon-volume-down:before {
+  content: "\f027"; }
+
+.icon-volume-up:before {
+  content: "\f028"; }
+
+.icon-qrcode:before {
+  content: "\f029"; }
+
+.icon-barcode:before {
+  content: "\f02a"; }
+
+.icon-tag:before {
+  content: "\f02b"; }
+
+.icon-tags:before {
+  content: "\f02c"; }
+
+.icon-book:before {
+  content: "\f02d"; }
+
+.icon-bookmark:before {
+  content: "\f02e"; }
+
+.icon-print:before {
+  content: "\f02f"; }
+
+.icon-camera:before {
+  content: "\f030"; }
+
+.icon-font:before {
+  content: "\f031"; }
+
+.icon-bold:before {
+  content: "\f032"; }
+
+.icon-italic:before {
+  content: "\f033"; }
+
+.icon-text-height:before {
+  content: "\f034"; }
+
+.icon-text-width:before {
+  content: "\f035"; }
+
+.icon-align-left:before {
+  content: "\f036"; }
+
+.icon-align-center:before {
+  content: "\f037"; }
+
+.icon-align-right:before {
+  content: "\f038"; }
+
+.icon-align-justify:before {
+  content: "\f039"; }
+
+.icon-list:before {
+  content: "\f03a"; }
+
+.icon-indent-left:before {
+  content: "\f03b"; }
+
+.icon-indent-right:before {
+  content: "\f03c"; }
+
+.icon-facetime-video:before {
+  content: "\f03d"; }
+
+.icon-picture:before {
+  content: "\f03e"; }
+
+.icon-pencil:before {
+  content: "\f040"; }
+
+.icon-map-marker:before {
+  content: "\f041"; }
+
+.icon-adjust:before {
+  content: "\f042"; }
+
+.icon-tint:before {
+  content: "\f043"; }
+
+.icon-edit:before {
+  content: "\f044"; }
+
+.icon-share:before {
+  content: "\f045"; }
+
+.icon-check:before {
+  content: "\f046"; }
+
+.icon-move:before {
+  content: "\f047"; }
+
+.icon-step-backward:before {
+  content: "\f048"; }
+
+.icon-fast-backward:before {
+  content: "\f049"; }
+
+.icon-backward:before {
+  content: "\f04a"; }
+
+.icon-play:before {
+  content: "\f04b"; }
+
+.icon-pause:before {
+  content: "\f04c"; }
+
+.icon-stop:before {
+  content: "\f04d"; }
+
+.icon-forward:before {
+  content: "\f04e"; }
+
+.icon-fast-forward:before {
+  content: "\f050"; }
+
+.icon-step-forward:before {
+  content: "\f051"; }
+
+.icon-eject:before {
+  content: "\f052"; }
+
+.icon-chevron-left:before {
+  content: "\f053"; }
+
+.icon-chevron-right:before {
+  content: "\f054"; }
+
+.icon-plus-sign:before {
+  content: "\f055"; }
+
+.icon-minus-sign:before {
+  content: "\f056"; }
+
+.icon-remove-sign:before {
+  content: "\f057"; }
+
+.icon-ok-sign:before {
+  content: "\f058"; }
+
+.icon-question-sign:before {
+  content: "\f059"; }
+
+.icon-info-sign:before {
+  content: "\f05a"; }
+
+.icon-screenshot:before {
+  content: "\f05b"; }
+
+.icon-remove-circle:before {
+  content: "\f05c"; }
+
+.icon-ok-circle:before {
+  content: "\f05d"; }
+
+.icon-ban-circle:before {
+  content: "\f05e"; }
+
+.icon-arrow-left:before {
+  content: "\f060"; }
+
+.icon-arrow-right:before {
+  content: "\f061"; }
+
+.icon-arrow-up:before {
+  content: "\f062"; }
+
+.icon-arrow-down:before {
+  content: "\f063"; }
+
+.icon-share-alt:before {
+  content: "\f064"; }
+
+.icon-resize-full:before {
+  content: "\f065"; }
+
+.icon-resize-small:before {
+  content: "\f066"; }
+
+.icon-plus:before {
+  content: "\f067"; }
+
+.icon-minus:before {
+  content: "\f068"; }
+
+.icon-asterisk:before {
+  content: "\f069"; }
+
+.icon-exclamation-sign:before {
+  content: "\f06a"; }
+
+.icon-gift:before {
+  content: "\f06b"; }
+
+.icon-leaf:before {
+  content: "\f06c"; }
+
+.icon-fire:before {
+  content: "\f06d"; }
+
+.icon-eye-open:before {
+  content: "\f06e"; }
+
+.icon-eye-close:before {
+  content: "\f070"; }
+
+.icon-warning-sign:before {
+  content: "\f071"; }
+
+.icon-plane:before {
+  content: "\f072"; }
+
+.icon-calendar:before {
+  content: "\f073"; }
+
+.icon-random:before {
+  content: "\f074"; }
+
+.icon-comment:before {
+  content: "\f075"; }
+
+.icon-magnet:before {
+  content: "\f076"; }
+
+.icon-chevron-up:before {
+  content: "\f077"; }
+
+.icon-chevron-down:before {
+  content: "\f078"; }
+
+.icon-retweet:before {
+  content: "\f079"; }
+
+.icon-shopping-cart:before {
+  content: "\f07a"; }
+
+.icon-folder-close:before {
+  content: "\f07b"; }
+
+.icon-folder-open:before {
+  content: "\f07c"; }
+
+.icon-resize-vertical:before {
+  content: "\f07d"; }
+
+.icon-resize-horizontal:before {
+  content: "\f07e"; }
+
+.icon-bar-chart:before {
+  content: "\f080"; }
+
+.icon-twitter-sign:before {
+  content: "\f081"; }
+
+.icon-facebook-sign:before {
+  content: "\f082"; }
+
+.icon-camera-retro:before {
+  content: "\f083"; }
+
+.icon-key:before {
+  content: "\f084"; }
+
+.icon-cogs:before {
+  content: "\f085"; }
+
+.icon-comments:before {
+  content: "\f086"; }
+
+.icon-thumbs-up:before {
+  content: "\f087"; }
+
+.icon-thumbs-down:before {
+  content: "\f088"; }
+
+.icon-star-half:before {
+  content: "\f089"; }
+
+.icon-heart-empty:before {
+  content: "\f08a"; }
+
+.icon-signout:before {
+  content: "\f08b"; }
+
+.icon-linkedin-sign:before {
+  content: "\f08c"; }
+
+.icon-pushpin:before {
+  content: "\f08d"; }
+
+.icon-external-link:before {
+  content: "\f08e"; }
+
+.icon-signin:before {
+  content: "\f090"; }
+
+.icon-trophy:before {
+  content: "\f091"; }
+
+.icon-github-sign:before {
+  content: "\f092"; }
+
+.icon-upload-alt:before {
+  content: "\f093"; }
+
+.icon-lemon:before {
+  content: "\f094"; }
+
+.icon-phone:before {
+  content: "\f095"; }
+
+.icon-check-empty:before {
+  content: "\f096"; }
+
+.icon-bookmark-empty:before {
+  content: "\f097"; }
+
+.icon-phone-sign:before {
+  content: "\f098"; }
+
+.icon-twitter:before {
+  content: "\f099"; }
+
+.icon-facebook:before {
+  content: "\f09a"; }
+
+.icon-github:before {
+  content: "\f09b"; }
+
+.icon-unlock:before {
+  content: "\f09c"; }
+
+.icon-credit-card:before {
+  content: "\f09d"; }
+
+.icon-rss:before {
+  content: "\f09e"; }
+
+.icon-hdd:before {
+  content: "\f0a0"; }
+
+.icon-bullhorn:before {
+  content: "\f0a1"; }
+
+.icon-bell:before {
+  content: "\f0a2"; }
+
+.icon-certificate:before {
+  content: "\f0a3"; }
+
+.icon-hand-right:before {
+  content: "\f0a4"; }
+
+.icon-hand-left:before {
+  content: "\f0a5"; }
+
+.icon-hand-up:before {
+  content: "\f0a6"; }
+
+.icon-hand-down:before {
+  content: "\f0a7"; }
+
+.icon-circle-arrow-left:before {
+  content: "\f0a8"; }
+
+.icon-circle-arrow-right:before {
+  content: "\f0a9"; }
+
+.icon-circle-arrow-up:before {
+  content: "\f0aa"; }
+
+.icon-circle-arrow-down:before {
+  content: "\f0ab"; }
+
+.icon-globe:before {
+  content: "\f0ac"; }
+
+.icon-wrench:before {
+  content: "\f0ad"; }
+
+.icon-tasks:before {
+  content: "\f0ae"; }
+
+.icon-filter:before {
+  content: "\f0b0"; }
+
+.icon-briefcase:before {
+  content: "\f0b1"; }
+
+.icon-fullscreen:before {
+  content: "\f0b2"; }
+
+.icon-group:before {
+  content: "\f0c0"; }
+
+.icon-link:before {
+  content: "\f0c1"; }
+
+.icon-cloud:before {
+  content: "\f0c2"; }
+
+.icon-beaker:before {
+  content: "\f0c3"; }
+
+.icon-cut:before {
+  content: "\f0c4"; }
+
+.icon-copy:before {
+  content: "\f0c5"; }
+
+.icon-paper-clip:before {
+  content: "\f0c6"; }
+
+.icon-save:before {
+  content: "\f0c7"; }
+
+.icon-sign-blank:before {
+  content: "\f0c8"; }
+
+.icon-reorder:before {
+  content: "\f0c9"; }
+
+.icon-list-ul:before {
+  content: "\f0ca"; }
+
+.icon-list-ol:before {
+  content: "\f0cb"; }
+
+.icon-strikethrough:before {
+  content: "\f0cc"; }
+
+.icon-underline:before {
+  content: "\f0cd"; }
+
+.icon-table:before {
+  content: "\f0ce"; }
+
+.icon-magic:before {
+  content: "\f0d0"; }
+
+.icon-truck:before {
+  content: "\f0d1"; }
+
+.icon-pinterest:before {
+  content: "\f0d2"; }
+
+.icon-pinterest-sign:before {
+  content: "\f0d3"; }
+
+.icon-google-plus-sign:before {
+  content: "\f0d4"; }
+
+.icon-google-plus:before {
+  content: "\f0d5"; }
+
+.icon-money:before {
+  content: "\f0d6"; }
+
+.icon-caret-down:before {
+  content: "\f0d7"; }
+
+.icon-caret-up:before {
+  content: "\f0d8"; }
+
+.icon-caret-left:before {
+  content: "\f0d9"; }
+
+.icon-caret-right:before {
+  content: "\f0da"; }
+
+.icon-columns:before {
+  content: "\f0db"; }
+
+.icon-sort:before {
+  content: "\f0dc"; }
+
+.icon-sort-down:before {
+  content: "\f0dd"; }
+
+.icon-sort-up:before {
+  content: "\f0de"; }
+
+.icon-envelope-alt:before {
+  content: "\f0e0"; }
+
+.icon-linkedin:before {
+  content: "\f0e1"; }
+
+.icon-undo:before {
+  content: "\f0e2"; }
+
+.icon-legal:before {
+  content: "\f0e3"; }
+
+.icon-dashboard:before {
+  content: "\f0e4"; }
+
+.icon-comment-alt:before {
+  content: "\f0e5"; }
+
+.icon-comments-alt:before {
+  content: "\f0e6"; }
+
+.icon-bolt:before {
+  content: "\f0e7"; }
+
+.icon-sitemap:before {
+  content: "\f0e8"; }
+
+.icon-umbrella:before {
+  content: "\f0e9"; }
+
+.icon-paste:before {
+  content: "\f0ea"; }
+
+.icon-lightbulb:before {
+  content: "\f0eb"; }
+
+.icon-exchange:before {
+  content: "\f0ec"; }
+
+.icon-cloud-download:before {
+  content: "\f0ed"; }
+
+.icon-cloud-upload:before {
+  content: "\f0ee"; }
+
+.icon-user-md:before {
+  content: "\f0f0"; }
+
+.icon-stethoscope:before {
+  content: "\f0f1"; }
+
+.icon-suitcase:before {
+  content: "\f0f2"; }
+
+.icon-bell-alt:before {
+  content: "\f0f3"; }
+
+.icon-coffee:before {
+  content: "\f0f4"; }
+
+.icon-food:before {
+  content: "\f0f5"; }
+
+.icon-file-alt:before {
+  content: "\f0f6"; }
+
+.icon-building:before {
+  content: "\f0f7"; }
+
+.icon-hospital:before {
+  content: "\f0f8"; }
+
+.icon-ambulance:before {
+  content: "\f0f9"; }
+
+.icon-medkit:before {
+  content: "\f0fa"; }
+
+.icon-fighter-jet:before {
+  content: "\f0fb"; }
+
+.icon-beer:before {
+  content: "\f0fc"; }
+
+.icon-h-sign:before {
+  content: "\f0fd"; }
+
+.icon-plus-sign-alt:before {
+  content: "\f0fe"; }
+
+.icon-double-angle-left:before {
+  content: "\f100"; }
+
+.icon-double-angle-right:before {
+  content: "\f101"; }
+
+.icon-double-angle-up:before {
+  content: "\f102"; }
+
+.icon-double-angle-down:before {
+  content: "\f103"; }
+
+.icon-angle-left:before {
+  content: "\f104"; }
+
+.icon-angle-right:before {
+  content: "\f105"; }
+
+.icon-angle-up:before {
+  content: "\f106"; }
+
+.icon-angle-down:before {
+  content: "\f107"; }
+
+.icon-desktop:before {
+  content: "\f108"; }
+
+.icon-laptop:before {
+  content: "\f109"; }
+
+.icon-tablet:before {
+  content: "\f10a"; }
+
+.icon-mobile-phone:before {
+  content: "\f10b"; }
+
+.icon-circle-blank:before {
+  content: "\f10c"; }
+
+.icon-quote-left:before {
+  content: "\f10d"; }
+
+.icon-quote-right:before {
+  content: "\f10e"; }
+
+.icon-spinner:before {
+  content: "\f110"; }
+
+.icon-circle:before {
+  content: "\f111"; }
+
+.icon-reply:before {
+  content: "\f112"; }
+
+.icon-github-alt:before {
+  content: "\f113"; }
+
+.icon-folder-close-alt:before {
+  content: "\f114"; }
+
+.icon-folder-open-alt:before {
+  content: "\f115"; }
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "freight-sans-pro", sans-serif;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-width: 960px;
+  min-height: 500px;
+  position: relative; }
+
+body {
+  font-size: 1.2em; }
+  body .button {
+    display: inline-block;
+    background-color: #eaaf3a;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.1)), color-stop(100%, rgba(0, 0, 0, 0.1)));
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    color: white;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    padding: 3px 7px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9em;
+    box-shadow: inset 0 1px 0 #f4d496, 0 2px 1px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 -1px #ac7812;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out; }
+    body .button:hover {
+      background-color: #eaaf3a;
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eaaf3a), color-stop(100%, #da9917));
+      background-image: -webkit-linear-gradient(#eaaf3a, #da9917);
+      background-image: linear-gradient(#eaaf3a, #da9917); }
+    body .button:active {
+      background-color: #c38815;
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c38815), color-stop(100%, #e8a623));
+      background-image: -webkit-linear-gradient(#c38815, #e8a623);
+      background-image: linear-gradient(#c38815, #e8a623); }
+    body .button.secondary {
+      color: white;
+      background-color: #565e6a;
+      box-shadow: inset 0 1px 0 #88919e, 0 2px 1px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 -1px #282c32; }
+      body .button.secondary:hover {
+        background-color: #565e6a;
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #565e6a), color-stop(100%, #3f454e));
+        background-image: -webkit-linear-gradient(#565e6a, #3f454e);
+        background-image: linear-gradient(#565e6a, #3f454e); }
+      body .button.secondary:active {
+        background-color: #343940;
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #343940), color-stop(100%, #4b525c));
+        background-image: -webkit-linear-gradient(#343940, #4b525c);
+        background-image: linear-gradient(#343940, #4b525c); }
+  body #flash-message {
+    background: green;
+    height: 40px;
+    padding: 0 15px;
+    line-height: 40px;
+    position: absolute;
+    text-align: center;
+    width: 60%;
+    left: 20%;
+    top: 0;
+    z-index: 100;
+    background: #eaaf3a;
+    -webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 0 #f6dead;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: none; }
+
+header {
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  color: #a9adb4;
+  background-color: #616a78;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #616a78), color-stop(100%, #4b525c));
+  background-image: -webkit-linear-gradient(#616a78, #4b525c);
+  background-image: linear-gradient(#616a78, #4b525c);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  padding: 0 15px; }
+  header #logo {
+    color: #a9adb4;
+    text-decoration: none;
+    font-size: 1.7em;
+    display: block;
+    float: left;
+    text-shadow: 0 -1px #dfe1e4, 0 1px #2c2e32;
+    letter-spacing: 0.1em; }
+  header .subtitle {
+    float: left;
+    display: block;
+    margin-left: 10px;
+    font-size: 0.8em;
+    text-shadow: 0 1px #2c2e32; }
+  header #account {
+    display: block;
+    float: right;
+    text-shadow: 0 1px #2c2e32; }
+    header #account .name {
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      vertical-align: baseline;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
+      -webkit-border-radius: 30px;
+      -moz-border-radius: 30px;
+      border-radius: 30px; }
+      header #account .name::before {
+        content: "\f0f1";
+        font-family: "FontAwesome";
+        margin-right: 5px; }
+
+section#patient-list, section#information {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out; }
+
+section#patient-list {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  width: 85%;
+  background: #2b2f35;
+  color: #848b94;
+  overflow: auto;
+  text-shadow: 0 -1px 0 black; }
+  section#patient-list #list-controls {
+    font-size: 0.9em;
+    overflow: hidden;
+    padding: 15px 25px 15px 15px;
+    box-shadow: inset 0 -7px 7px rgba(0, 0, 0, 0.2); }
+    section#patient-list #list-controls #sorting-options {
+      float: left;
+      display: block; }
+      section#patient-list #list-controls #sorting-options li {
+        display: inline-block; }
+        section#patient-list #list-controls #sorting-options li a {
+          color: #848b94;
+          padding: 0 10px;
+          vertical-align: baseline;
+          height: 25px;
+          line-height: 25px; }
+          section#patient-list #list-controls #sorting-options li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-border-radius: 30px;
+            -moz-border-radius: 30px;
+            border-radius: 30px;
+            text-decoration: none; }
+    section#patient-list #list-controls #list-information {
+      display: block;
+      float: right; }
+      section#patient-list #list-controls #list-information a {
+        margin-left: 10px; }
+  section#patient-list #patients {
+    background: #32363d;
+    list-style-type: none;
+    box-shadow: 0 7px 7px rgba(0, 0, 0, 0.2); }
+    section#patient-list #patients > li {
+      padding: 15px 25px 15px 15px;
+      border-bottom: 1px solid #24282d;
+      border-top: 1px solid #424851; }
+      section#patient-list #patients > li:hover {
+        background: #2b2f35;
+        box-shadow: inset 0 -1px 0 #32363d, inset 0 1px 0 #141619, inset 0 25px 25px #292d32, inset 0 -25px 25px #292d32; }
+      section#patient-list #patients > li.active {
+        background: #202327;
+        box-shadow: inset 0 -1px 0 #424851, inset 0 1px 0 #141619, inset 0 25px 25px #191b1e, inset 0 -25px 25px #191b1e;
+        border: none; }
+        section#patient-list #patients > li.active .medication {
+          display: block;
+          margin-bottom: 15px; }
+      section#patient-list #patients > li .listing {
+        overflow: hidden;
+        padding: 10px 25px 10px 10px;
+        cursor: pointer; }
+        section#patient-list #patients > li .listing .portrait {
+          display: block;
+          float: left;
+          margin-right: 20px;
+          position: relative;
+          width: 55px;
+          height: 55px;
+          -webkit-border-radius: 55px;
+          -moz-border-radius: 55px;
+          border-radius: 55px;
+          box-shadow: 0 1px 1px #707a89, 0 -1px 1px black;
+          overflow: hidden; }
+          section#patient-list #patients > li .listing .portrait::after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 10px 10px rgba(0, 0, 0, 0.5); }
+          section#patient-list #patients > li .listing .portrait img {
+            width: 55px;
+            height: 55px; }
+        section#patient-list #patients > li .listing .name {
+          font-size: 1.7em;
+          line-height: 1.7;
+          color: #d6d8db;
+          display: block;
+          float: left;
+          font-weight: 500; }
+          section#patient-list #patients > li .listing .name strong {
+            font-weight: 700; }
+        section#patient-list #patients > li .listing .bed {
+          display: block;
+          float: right;
+          text-transform: uppercase;
+          line-height: 1;
+          width: 90px;
+          text-align: right; }
+          section#patient-list #patients > li .listing .bed .bed-number {
+            font-size: 2em;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 5px; }
+        section#patient-list #patients > li .listing .status {
+          display: block;
+          float: right;
+          line-height: 1;
+          line-height: 56px;
+          color: rgba(132, 139, 148, 0.6);
+          margin-left: 10px; }
+          section#patient-list #patients > li .listing .status em {
+            font-weight: 600;
+            font-size: 1.1em;
+            font-style: normal;
+            color: #848b94; }
+            section#patient-list #patients > li .listing .status em::before {
+              content: "\f017";
+              font-family: "FontAwesome";
+              margin: 0 4px;
+              font-size: 0.8em;
+              color: rgba(132, 139, 148, 0.6); }
+          section#patient-list #patients > li .listing .status .light {
+            font-size: 2em;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 5px;
+            text-indent: -9999em;
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            box-shadow: 0 1px 1px #707a89, 0 -1px 1px black; }
+            section#patient-list #patients > li .listing .status .light.ok {
+              background-color: #5ca54e;
+              background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5ca54e), color-stop(100%, #365f2e));
+              background-image: -webkit-linear-gradient(#5ca54e, #365f2e);
+              background-image: linear-gradient(#5ca54e, #365f2e); }
+            section#patient-list #patients > li .listing .status .light.warning {
+              background-color: #efc268;
+              background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #efc268), color-stop(100%, #da9917));
+              background-image: -webkit-linear-gradient(#efc268, #da9917);
+              background-image: linear-gradient(#efc268, #da9917); }
+            section#patient-list #patients > li .listing .status .light.alert {
+              background-color: #b13636;
+              background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b13636), color-stop(100%, #631e1e));
+              background-image: -webkit-linear-gradient(#b13636, #631e1e);
+              background-image: linear-gradient(#b13636, #631e1e); }
+      section#patient-list #patients > li .medication {
+        -webkit-transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
+        -moz-transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
+        transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
+        margin: 0 15px;
+        text-shadow: 0 1px 0 #c3c8cf; }
+        section#patient-list #patients > li .medication::after {
+          content: "";
+          display: block;
+          clear: left; }
+        section#patient-list #patients > li .medication .medication-tabs {
+          list-style-type: none;
+          padding-left: 60px; }
+          section#patient-list #patients > li .medication .medication-tabs::after {
+            content: "";
+            display: block;
+            clear: left; }
+          section#patient-list #patients > li .medication .medication-tabs li {
+            display: block;
+            float: left; }
+            section#patient-list #patients > li .medication .medication-tabs li a {
+              display: block;
+              z-index: 10;
+              float: left;
+              position: relative;
+              background: #da9917;
+              color: white;
+              text-decoration: none;
+              font-weight: 600;
+              font-size: 1em;
+              text-transform: uppercase;
+              padding: 5px 10px;
+              text-shadow: 0 -1px 0 #7e580d;
+              margin-left: 10px;
+              top: 10px;
+              -webkit-border-radius: 3px 3px 0 0;
+              -moz-border-radius: 3px 3px 0 0;
+              border-radius: 3px 3px 0 0;
+              box-shadow: inset 0 1px 0 #f4d496, inset 0 -7px 7px rgba(0, 0, 0, 0.2); }
+              section#patient-list #patients > li .medication .medication-tabs li a:hover {
+                padding-bottom: 8px;
+                top: 7px; }
+              section#patient-list #patients > li .medication .medication-tabs li a.active {
+                background: #a7aeb8;
+                box-shadow: inset 0 1px 0 #e0e2e5;
+                color: #333333;
+                text-shadow: 0 1px 0 #c3c8cf;
+                padding: 10px 15px;
+                top: 1px; }
+            section#patient-list #patients > li .medication .medication-tabs li:first-child a {
+              background: #8b94a1;
+              color: white;
+              text-shadow: 0 -1px 0 #59616d;
+              box-shadow: inset 0 1px 0 #e0e2e5, inset 0 -7px 7px rgba(0, 0, 0, 0.2); }
+              section#patient-list #patients > li .medication .medication-tabs li:first-child a.active {
+                background: #a7aeb8;
+                box-shadow: inset 0 1px 0 #e0e2e5;
+                color: #333333;
+                text-shadow: 0 1px 0 #c3c8cf;
+                padding: 10px 15px;
+                top: 1px; }
+        section#patient-list #patients > li .medication .medication-content {
+          position: relative;
+          z-index: 5;
+          background: #a7aeb8;
+          color: #333333;
+          -webkit-border-radius: 3px;
+          -moz-border-radius: 3px;
+          border-radius: 3px;
+          padding: 15px;
+          box-shadow: inset 0 1px 0 #e0e2e5, 0 0 20px rgba(0, 0, 0, 0.5); }
+          section#patient-list #patients > li .medication .medication-content > div {
+            display: none; }
+          section#patient-list #patients > li .medication .medication-content .overview {
+            padding: 20px; }
+            section#patient-list #patients > li .medication .medication-content .overview::after {
+              content: "";
+              display: block;
+              clear: left; }
+            section#patient-list #patients > li .medication .medication-content .overview .panel {
+              float: left;
+              line-height: 1; }
+              section#patient-list #patients > li .medication .medication-content .overview .panel h4 {
+                line-height: 1;
+                margin: 12px 0 0;
+                font-size: 0.9em; }
+              section#patient-list #patients > li .medication .medication-content .overview .panel li.done {
+                font-style: italic;
+                opacity: 0.5;
+                list-style-type: none; }
+                section#patient-list #patients > li .medication .medication-content .overview .panel li.done::before {
+                  content: "\f00c";
+                  display: block;
+                  float: left;
+                  font-family: "FontAwesome";
+                  margin: 0 5px 0 -25px; }
+              section#patient-list #patients > li .medication .medication-content .overview .panel.vitals {
+                width: 28%; }
+              section#patient-list #patients > li .medication .medication-content .overview .panel.prescriptions {
+                width: 36%; }
+              section#patient-list #patients > li .medication .medication-content .overview .panel.administration {
+                width: 36%; }
+          section#patient-list #patients > li .medication .medication-content .prescription {
+            text-align: center; }
+            section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions {
+              text-align: left;
+              width: 100%;
+              border-spacing: 0; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions th {
+                border-bottom: 1px solid #8b94a1;
+                padding-bottom: 5px; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td {
+                padding: 7px 0;
+                border-bottom: 1px solid #8b94a1;
+                border-top: 1px solid #c3c8cf;
+                line-height: 1; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td:last-child {
+                  text-align: right; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td em {
+                  display: block;
+                  color: rgba(51, 51, 51, 0.7);
+                  font-size: 0.8em;
+                  text-align: left; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a {
+                  display: inline-block;
+                  text-decoration: none; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a::after {
+                    font-family: "FontAwesome";
+                    text-decoration: none;
+                    font-size: 1.1em;
+                    color: rgba(51, 51, 51, 0.5);
+                    -webkit-border-radius: 100px;
+                    -moz-border-radius: 100px;
+                    border-radius: 100px;
+                    padding: 4px;
+                    margin-right: 4px; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a:hover::after {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: rgba(51, 51, 51, 0.8); }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a.edit::after {
+                    content: "\f040"; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a.ok::after {
+                    content: "\f00c"; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a.remove::after {
+                    content: "\f00d"; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr:last-child td {
+                border-bottom: none; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new-template {
+                display: none; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .select-input {
+                margin-right: 15px; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input {
+                position: relative;
+                background: whitesmoke;
+                height: 30px;
+                line-height: 30px;
+                margin-right: 15px;
+                padding: 0 5px;
+                border: 1px solid #8b94a1;
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.2); }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input .post {
+                  font-size: 0.7em;
+                  font-weight: 600; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input input {
+                  border: none;
+                  background: transparent;
+                  height: 30px;
+                  line-height: 30px;
+                  font-size: 1em;
+                  width: 95%; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input input:focus {
+                    outline: none;
+                    border: none; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input.dosage-input input {
+                  width: 60%; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input .date-time-picker {
+                  position: absolute;
+                  background: whitesmoke;
+                  text-shadow: 0 1px 0 white;
+                  -webkit-border-radius: 3px;
+                  -moz-border-radius: 3px;
+                  border-radius: 3px;
+                  top: 32px;
+                  width: 200px;
+                  line-height: 1;
+                  font-size: 0.9em;
+                  padding: 10px;
+                  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+                  display: none; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input .date-time-picker p {
+                    margin-bottom: 15px; }
+                    section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input .date-time-picker p:last-child {
+                      margin-bottom: 0; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new .input .date-time-picker em {
+                    font-size: 1em;
+                    display: inline; }
+            section#patient-list #patients > li .medication .medication-content .prescription .button {
+              margin: 10px auto 0; }
+          section#patient-list #patients > li .medication .medication-content .administration table.dosages {
+            width: 100%;
+            border-spacing: 0; }
+            section#patient-list #patients > li .medication .medication-content .administration table.dosages td:last-child, section#patient-list #patients > li .medication .medication-content .administration table.dosages th:last-child {
+              width: 75px;
+              text-align: center; }
+            section#patient-list #patients > li .medication .medication-content .administration table.dosages th {
+              border-bottom: 1px solid #8b94a1;
+              padding-bottom: 5px; }
+            section#patient-list #patients > li .medication .medication-content .administration table.dosages td {
+              padding: 7px 0;
+              border-bottom: 1px solid #8b94a1;
+              border-top: 1px solid #c3c8cf; }
+              section#patient-list #patients > li .medication .medication-content .administration table.dosages td .undo {
+                display: none;
+                color: rgba(51, 51, 51, 0.5); }
+            section#patient-list #patients > li .medication .medication-content .administration table.dosages tr:last-child td {
+              border-bottom: none; }
+            section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done {
+              color: rgba(51, 51, 51, 0.5); }
+              section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done .undo {
+                display: inline-block; }
+              section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done .done {
+                display: none; }
+
+section#information {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  right: 0;
+  width: 15%;
+  color: #444444; }
+  section#information #document {
+    z-index: 20;
+    position: absolute;
+    top: 10px;
+    right: 0;
+    bottom: 10px;
+    left: -10px;
+    border-top: 1px solid white;
+    padding: 30px;
+    overflow: auto; }
+  section#information #document-a, section#information #document-b, section#information #document {
+    background: whitesmoke;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2), 0 0 5px rgba(0, 0, 0, 0.4); }
+  section#information #document-a, section#information #document-b {
+    display: block;
+    position: absolute;
+    z-index: 10; }
+  section#information #document-a {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: darkgrey; }
+  section#information #document-b {
+    top: 5px;
+    left: -5px;
+    right: 0;
+    bottom: 5px;
+    background: gainsboro;
+    border-top: 1px solid #e8e8e8; }
+  section#information #patient-document {
+    display: none;
+    text-shadow: 0 1px 0 white; }
+    section#information #patient-document .portrait {
+      display: block;
+      margin: 0 auto 10px;
+      position: relative;
+      width: 200px;
+      height: 200px;
+      -webkit-border-radius: 200px;
+      -moz-border-radius: 200px;
+      border-radius: 200px;
+      box-shadow: 0 1px 1px white, 0 -1px 1px #767676, 0 0 15px #c2c2c2;
+      overflow: hidden; }
+      section#information #patient-document .portrait::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0 0 10px 10px rgba(0, 0, 0, 0.5); }
+      section#information #patient-document .portrait img {
+        width: 200px;
+        height: 200px; }
+    section#information #patient-document h2 {
+      font-size: 2em;
+      text-align: center;
+      line-height: 1; }
+    section#information #patient-document .subtitle {
+      display: block;
+      text-align: center;
+      font-size: 1.3em;
+      color: #aaaaaa;
+      line-height: 1;
+      text-transform: lowercase; }
+    section#information #patient-document section {
+      margin-top: 35px; }
+    section#information #patient-document ul {
+      list-style-type: none; }
+      section#information #patient-document ul li {
+        border-top: 1px solid white;
+        border-bottom: 1px solid gainsboro;
+        overflow: hidden;
+        padding: 10px 0;
+        line-height: 1; }
+        section#information #patient-document ul li.important {
+          font-weight: 600;
+          color: #900; }
+        section#information #patient-document ul li.unimportant {
+          font-weight: 600;
+          color: #070; }
+        section#information #patient-document ul li em {
+          font-size: 0.9em;
+          color: #999;
+          display: block; }
+        section#information #patient-document ul li:first-child {
+          border-top: none; }
+        section#information #patient-document ul li:last-child {
+          border-bottom: none; }
+        section#information #patient-document ul li .label {
+          width: 80px;
+          display: block;
+          float: left;
+          font-weight: 600;
+          clear: left;
+          line-height: 1;
+          text-align: right; }
+        section#information #patient-document ul li .data {
+          margin-left: 80px;
+          padding-left: 15px;
+          display: block;
+          line-height: 1; }
+  section#information #empty {
+    display: table;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    padding: 30px;
+    z-index: -1;
+    opacity: 1;
+    -webkit-transition: opacity 0.2s ease-in-out;
+    -moz-transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out; }
+    section#information #empty #no-patient-selected {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      margin-top: 100px;
+      line-height: 1.2;
+      font-size: 1em;
+      color: #cfcfcf;
+      text-shadow: 0 1px 0 white; }
+      section#information #empty #no-patient-selected::before {
+        content: "\f112";
+        font-family: "FontAwesome";
+        display: block;
+        font-size: 3em;
+        color: gainsboro; }
+      section#information #empty #no-patient-selected strong {
+        display: block;
+        font-weight: 500;
+        font-size: 2em;
+        line-height: 0.8;
+        margin-bottom: 15px; }
+
+body.patient-selected section#patient-list {
+  width: 70%; }
+body.patient-selected section#information {
+  width: 30%; }
+  body.patient-selected section#information #empty {
+    opacity: 0; }
