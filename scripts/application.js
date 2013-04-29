@@ -31,7 +31,7 @@
           upcomingDoses = d.scheduledTime;
         }
       }
-      return moment(Math.min(upcomingDoses)).fromNow();
+      return moment(Math.min(upcomingDoses));
     };
 
     Patient.prototype.firstName = function() {

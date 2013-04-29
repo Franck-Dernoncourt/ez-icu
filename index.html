@@ -65,7 +65,7 @@
           Bed <span class="bed-number"><%= patient.bed %></span>
         </span>
         <span class="status">
-          Next dosage <em><%= patient.nextDosage() %></em>
+          Next dosage <em><%= patient.nextDosage().fromNow() %></em>
           <span class="light <%= patient.status %>"><%= patient.status %></span>
         </span>
       </div>

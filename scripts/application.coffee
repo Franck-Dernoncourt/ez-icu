@@ -20,7 +20,7 @@ class Patient
 
   nextDosage: ->
     upcomingDoses = d.scheduledTime for d in @dosages when d.givenTime is null
-    moment(Math.min(upcomingDoses)).fromNow()
+    moment(Math.min(upcomingDoses))
 
 
   firstName: ->
