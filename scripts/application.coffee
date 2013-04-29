@@ -13,10 +13,15 @@ class Patient
     @visitInformation = data.visitInformation
     @otherMedications = data.otherMedications
     @portraitFilename = data.portraitFilename
-    @nextDosage = data.nextDosage
+    # @nextDosage = data.nextDosage
     @status = data.status
     @prescriptions = data.prescriptions
     @dosages = data.dosages
+
+  nextDosage: ->
+    upcomingDoses = d.scheduledTime for d in @dosages when d.givenTime is null
+    moment(Math.min(upcomingDoses)).fromNow()
+
 
   firstName: ->
     @name.split(" ")[0]
@@ -55,33 +60,42 @@ kamran = new Patient({
     {
       medication: "Aspirin",
       dosage: "100mg",
-      frequency: "Every hour <em>Q1H</em>",
-      start: "2 hours ago <em>2 dosages given</em>"
-      end: "in 1 hour, 2 minutes <em>2 dosages remaining</em>"
+      frequency: moment.duration(1, 'hours'),
+      # frequency: "Every hour <em>Q1H</em>",
+      start: moment().subtract('hours', 2).add('minutes', 2),
+      # start: "2 hours ago <em>2 dosages given</em>"
+      end: moment().add('hours', 1).add('minutes', 2)
+      # end: "in 1 hour, 2 minutes <em>2 dosages remaining</em>"
     }
   ],
   dosages: [
     {
       medication: "Aspirin",
       dosage: "100mg",
-      scheduledTime: "in 2 minutes",
-      done: false
+      scheduledTime: moment().add('minutes', 2),
+      # scheduledTime: "in 2 minutes",
+      givenTime: null
+      # done: false
     },
     {
       medication: "Aspirin",
       dosage: "100mg",
-      scheduledTime: "58 minutes ago",
-      done: true
+      scheduledTime: moment().subtract('hours', 1).add('minutes', 2),
+      givenTime: moment().subtract('hours', 1).add('minutes', 2)
+      # scheduledTime: "58 minutes ago",
+      # done: true
     },
     {
       medication: "Aspirin",
       dosage: "100mg",
-      scheduledTime: "about 2 hours ago",
-      done: true
+      scheduledTime: moment().subtract('hours', 2).add('minutes', 2),
+      givenTime: moment().subtract('hours', 2).add('minutes', 2)
+      # scheduledTime: "about 2 hours ago",
+      # done: true
     },
   ],
-  nextDosage: "in 2 min.",
-  status: "warning",
+  # nextDosage: "in 2 min.",
+  # status: "warning",
   bed: 3,
   portraitFilename: "kamran.jpg"
 })
@@ -304,7 +318,8 @@ zuckerberg.portraitFilename = "zuckerberg.jpg"
 zuckerberg.age = 28
 zuckerberg.bed = 13
 
-testPatients = [kamran, robin, franck, mohammad, putin, obama, bush, zuckerberg]
+# testPatients = [kamran, robin, franck, mohammad, putin, obama, bush, zuckerberg]
+testPatients = [kamran]
 
 # Sorting methods:
 sortByName = ->
@@ -328,6 +343,7 @@ sortByBed = ->
     return  1 if aVal > bVal
     return  0
   $list.append listItems
+
 
 # On document ready:
 $ ->

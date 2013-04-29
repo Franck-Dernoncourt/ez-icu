@@ -15,6 +15,7 @@
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
     <link rel="stylesheet" href="styles/application.css">
+    <script src="scripts/libraries/moment.js"></script>
     <script src="scripts/libraries/jquery.js"></script>
     <script src="scripts/libraries/underscore.js"></script>
     <script src="scripts/libraries/backbone.js"></script>
@@ -64,7 +65,7 @@
           Bed <span class="bed-number"><%= patient.bed %></span>
         </span>
         <span class="status">
-          Next dosage <em><%= patient.nextDosage %></em>
+          Next dosage <em><%= patient.nextDosage() %></em>
           <span class="light <%= patient.status %>"><%= patient.status %></span>
         </span>
       </div>
