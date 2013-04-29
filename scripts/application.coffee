@@ -14,9 +14,16 @@ class Patient
     @otherMedications = data.otherMedications
     @portraitFilename = data.portraitFilename
     # @nextDosage = data.nextDosage
-    @status = data.status
     @prescriptions = data.prescriptions
     @dosages = data.dosages
+
+  status: ->
+    if moment().add('minutes', 5) > this.nextDosage()
+      "warning"
+    else if moment() > this.nextDosage() 
+      "alert"
+    else
+      "ok"
 
   nextDosage: ->
     upcomingDoses = d.scheduledTime for d in @dosages when d.givenTime is null
@@ -122,46 +129,53 @@ robin = new Patient({
     {
       medication: "Morphine",
       dosage: "100mg",
-      frequency: "Every 2 hours <em>Q2H</em>",
-      start: "15 minutes ago <em>1 dosage given</em>"
-      end: "in 3 hours, 45 minutes <em>4 dosages remaining</em>"
+      frequency: moment.duration(2, 'hours'),
+      # frequency: "Every 2 hours <em>Q2H</em>",
+      start: moment().subtract('minutes', 15),
+      # start: "15 minutes ago <em>1 dosage given</em>"
+      end: moment().add('hours', 4).subtract('minutes', 15)
+      # end: "in 3 hours, 45 minutes <em>4 dosages remaining</em>"
     },
-    {
-      medication: "Naproxen",
-      dosage: "30mg",
-      frequency: "Every 24 hours <em>Q1D</em>",
-      start: "9 hours ago <em>1 dosage given</em>"
-      end: "in 6 days, 15 hours <em>7 dosages remaining</em>"
-    }
+    # {
+    #   medication: "Naproxen",
+    #   dosage: "30mg",
+    #   frequency: "Every 24 hours <em>Q1D</em>",
+    #   start: "9 hours ago <em>1 dosage given</em>"
+    #   end: "in 6 days, 15 hours <em>7 dosages remaining</em>"
+    # }
   ],
   dosages: [
     {
       medication: "Morphine",
       dosage: "100mg",
-      scheduledTime: "in 45 minutes",
-      done: false
+      scheduledTime: moment().add('minutes', 45)
+      # scheduledTime: "in 45 minutes",
+      givenTime: null
+      # done: false
     },
-    {
-      medication: "Naproxen",
-      dosage: "30mg",
-      scheduledTime: "in about 15 hours",
-      done: false
-    },
+    # {
+    #   medication: "Naproxen",
+    #   dosage: "30mg",
+    #   scheduledTime: "in about 15 hours",
+    #   done: false
+    # },
     {
       medication: "Morphine",
       dosage: "100mg",
-      scheduledTime: "15 minutes ago",
-      done: true
+      # scheduledTime: "15 minutes ago",
+      scheduledTime: moment().subtract('minutes', 15),
+      givenTime: moment().subtract('minutes', 15)
+      # done: true
     },
-    {
-      medication: "Naproxen",
-      dosage: "30mg",
-      scheduledTime: "9 hours ago",
-      done: true
-    },
+    # {
+    #   medication: "Naproxen",
+    #   dosage: "30mg",
+    #   scheduledTime: "9 hours ago",
+    #   done: true
+    # },
   ],
-  nextDosage: "in 45 min.",
-  status: "ok",
+  # nextDosage: "in 45 min.",
+  # status: "ok",
   bed: 7,
   portraitFilename: "robin.jpg"
 })
@@ -319,7 +333,7 @@ zuckerberg.age = 28
 zuckerberg.bed = 13
 
 # testPatients = [kamran, robin, franck, mohammad, putin, obama, bush, zuckerberg]
-testPatients = [kamran]
+testPatients = [kamran, robin]
 
 # Sorting methods:
 sortByName = ->
@@ -343,7 +357,6 @@ sortByBed = ->
     return  1 if aVal > bVal
     return  0
   $list.append listItems
-
 
 # On document ready:
 $ ->
