@@ -95,7 +95,7 @@
                 <% _.each(patient.prescriptions, function (prescription) { %>
                   <li>
                     <h4><%= prescription.medication %> <em><%= prescription.dosage %></em></h4>
-                    <span class="additional"><%= prescription.frequency %></span>
+                    <span class="additional">every <%= prescription.frequency.asHours() %> hours</span>
                   </li>
                 <% }) %>
               </ul>
@@ -104,9 +104,9 @@
               <h3>Administration</h3>
               <ol>
                 <% _.each(patient.dosages, function (dosage) { %>
-                  <li <% if (dosage.done) print('class="done"') %>>
+                  <li <% if (dosage.givenTime !== null) print('class="done"') %>>
                     <h4><%= dosage.medication %></h4>
-                    <span class="additional"><%= dosage.dosage %>, <%= dosage.scheduledTime %></span>
+                    <span class="additional"><%= dosage.dosage %>, <%= dosage.scheduledTime.fromNow() %></span>
                   </li>
                 <% }) %>
               </ol>
@@ -188,9 +188,9 @@
                   <tr>
                     <td><%= prescription.medication %></td>
                     <td><%= prescription.dosage %></td>
-                    <td><%= prescription.frequency %></td>
-                    <td><%= prescription.start %></td>
-                    <td><%= prescription.end %></td>
+                    <td>every <%= prescription.frequency.asHours() %> hours</td>
+                    <td><%= prescription.start.fromNow() %></td>
+                    <td><%= prescription.end.fromNow() %></td>
                     <td>
                       <a href="#" class="edit not-implemented"></a>
                       <a href="#" class="remove not-implemented"></a>
@@ -213,10 +213,10 @@
               </thead>
               <tbody>
               <% _.each(patient.dosages, function (dosage) { %>
-                <tr <% if (dosage.done) print('class="done"') %>>
+                <tr <% if (dosage.givenTime !== null) print('class="done"') %>>
                   <td><%= dosage.medication %></td>
                   <td><%= dosage.dosage %></td>
-                  <td><%= dosage.scheduledTime %></td>
+                  <td><%= dosage.scheduledTime.fromNow() %></td>
                   <td>
                     <a href="#" class="done button">Done</a>
                     <a href="#" class="undo">Undo</a>
