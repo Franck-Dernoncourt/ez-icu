@@ -33,6 +33,7 @@
         <ul id="sorting-options">
           <li><a href="#" id="sort-by-name" class="active">Sort by name</a></li>
           <li><a href="#" id="sort-by-bed">Sort by bed</a></li>
+          <li><a href="#" id="sort-by-urgency">Sort by next dose</a></li>
         </ul>
         <span id="list-information">
           <span id="number-of-patients">
@@ -68,6 +69,9 @@
           Next dosage <em><%= patient.nextDosage().fromNow() %></em>
           <span class="light <%= patient.status() %>"><%= patient.status() %></span>
         </span>
+      </div>
+      <div class="next-dose-ms" style="display: none;">
+        <%= patient.nextDosage() %>
       </div>
       <div class="medication">
         <ul class="medication-tabs">

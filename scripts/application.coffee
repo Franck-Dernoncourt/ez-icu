@@ -358,6 +358,17 @@ sortByBed = ->
     return  0
   $list.append listItems
 
+sortByUrgency = ->
+  $list = $("#patients")
+  listItems = $list.children("li").get()
+  listItems.sort (a, b) ->
+    aVal = parseInt $(a).find(".next-dose-ms").text(), 10
+    bVal = parseInt $(b).find(".next-dose-ms").text(), 10
+    return -1 if aVal < bVal
+    return  1 if aVal > bVal
+    return  0
+  $list.append listItems
+
 # On document ready:
 $ ->
   # Add sort handlers:
@@ -366,6 +377,7 @@ $ ->
     event.preventDefault()
     return if $(this).hasClass "active"
     $("#sort-by-bed").removeClass "active"
+    $("#sort-by-urgency").removeClass "active"
     $(this).addClass "active"
     sortByName()
 
@@ -374,8 +386,18 @@ $ ->
     event.preventDefault()
     return if $(this).hasClass "active"
     $("#sort-by-name").removeClass "active"
+    $("#sort-by-urgency").removeClass "active"
     $(this).addClass "active"
     sortByBed()
+
+  $("#sort-by-urgency").click (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+    return if $(this).hasClass "active"
+    $("#sort-by-bed").removeClass "active"
+    $("#sort-by-name").removeClass "active"
+    $(this).addClass "active"
+    sortByUrgency()
   
   # Add the patients:
   for patient in testPatients
