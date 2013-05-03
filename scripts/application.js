@@ -1,7 +1,8 @@
 (function() {
   var Dose, DoseRowView, Patient, PatientDocumentView, PatientList, PatientListItemView, PatientListView, Prescription, franck, kamran, mohammad, robin, sortByBed, sortByName, sortByUrgency, testPatients,
     __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   Prescription = (function(_super) {
 
@@ -262,16 +263,23 @@
     };
 
     PatientListItemView.prototype.rerender = function() {
-      var doseRowView, _i, _len, _ref;
+      var doseRowView, _i, _len, _ref, _ref2;
       _ref = this.doseRowViews;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         doseRowView = _ref[_i];
-        doseRowView.render();
+        if (_ref2 = doseRowView.model, __indexOf.call(this.model.doses(), _ref2) < 0) {
+          doseRowView.remove();
+        } else {
+          doseRowView.render();
+        }
       }
       $(this.el).find(".listing").html(_.template($("#patient-listing-template").html(), {
         patient: this.model
       }));
       $(this.el).find(".administration-list").html(_.template($("#administration-list-template").html(), {
+        patient: this.model
+      }));
+      $(this.el).find(".prescriptions-list").html(_.template($("#prescriptions-list-template").html(), {
         patient: this.model
       }));
       this.setNextDose();
@@ -284,6 +292,19 @@
       } else {
         return $(this.el).data('next-dose', null);
       }
+    };
+
+    PatientListItemView.prototype.removePrescription = function(event) {
+      var $tr, prescriptionIndex;
+      $tr = $(event.target).parents("tr");
+      prescriptionIndex = $tr.index() - 1;
+      $tr.remove();
+      this.model.get('prescriptions').splice(prescriptionIndex, 1);
+      return this.rerender();
+    };
+
+    PatientListItemView.prototype.events = {
+      'click .remove-existing': 'removePrescription'
     };
 
     return PatientListItemView;
@@ -341,6 +362,10 @@
     DoseRowView.prototype.undo = function() {
       this.model.set('givenTime', null);
       return this.render();
+    };
+
+    DoseRowView.prototype.remove = function() {
+      return $(this.el).remove();
     };
 
     DoseRowView.prototype.events = {
@@ -510,7 +535,6 @@
   $(function() {
     var patient, patientDocumentView, patientListView, _i, _len;
     patientListView = new PatientListView;
-    patientListView.collection.fetch();
     if (patientListView.collection.length === 0) {
       for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
         patient = testPatients[_i];

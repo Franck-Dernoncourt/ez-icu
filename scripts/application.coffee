@@ -131,10 +131,14 @@ class PatientListItemView extends Backbone.View
 
   rerender: ->
     for doseRowView in @doseRowViews
-      doseRowView.render()
+      if doseRowView.model not in @model.doses()
+        doseRowView.remove()
+      else
+        doseRowView.render()
 
     $(@el).find(".listing").html _.template $("#patient-listing-template").html(), {patient: @model}
     $(@el).find(".administration-list").html _.template $("#administration-list-template").html(), {patient: @model}
+    $(@el).find(".prescriptions-list").html _.template $("#prescriptions-list-template").html(), {patient: @model}
 
     @setNextDose()
     @
@@ -144,6 +148,16 @@ class PatientListItemView extends Backbone.View
       $(@el).data 'next-dose', @model.nextDose().get('scheduledTime').valueOf()
     else
       $(@el).data 'next-dose', null
+
+  removePrescription: (event) ->
+    $tr = $(event.target).parents("tr")
+    prescriptionIndex = $tr.index() - 1
+    $tr.remove()
+    @model.get('prescriptions').splice prescriptionIndex, 1
+    @rerender()
+
+  events:
+    'click .remove-existing': 'removePrescription'
 
 
 class PatientDocumentView extends Backbone.View
@@ -171,6 +185,9 @@ class DoseRowView extends Backbone.View
   undo: ->
     @model.set 'givenTime', null
     @render()
+
+  remove: ->
+    $(@el).remove()
 
   events:
     'click .done': 'done'
@@ -348,7 +365,7 @@ sortByUrgency = ->
 $ ->
   # Backbone View setup:
   patientListView = new PatientListView
-  patientListView.collection.fetch()
+  #patientListView.collection.fetch()
   if patientListView.collection.length == 0
     patientListView.collection.create patient for patient in testPatients
 

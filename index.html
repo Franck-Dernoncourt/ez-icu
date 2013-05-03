@@ -104,6 +104,15 @@
       <% } %>
     </script>
 
+    <script type="text/html" id="prescriptions-list-template">
+      <% _.each(patient.get('prescriptions'), function (prescription) { %>
+        <li>
+          <h4><%= prescription.get('medication') %> <em><%= prescription.get('dosage') %></em></h4>
+          <span class="additional">every <%= prescription.get('interval').asHours() %> hours</span>
+        </li>
+      <% }) %>
+    </script>
+
     <script type="text/html" id="list-item-template">
       <div class="listing"></div>
       <div class="medication">
@@ -128,14 +137,7 @@
             </div>
             <div class="prescriptions panel">
               <h3>Prescriptions</h3>
-              <ul>
-                <% _.each(patient.get('prescriptions'), function (prescription) { %>
-                  <li>
-                    <h4><%= prescription.get('medication') %> <em><%= prescription.get('dosage') %></em></h4>
-                    <span class="additional">every <%= prescription.get('interval').asHours() %> hours</span>
-                  </li>
-                <% }) %>
-              </ul>
+              <ul class="prescriptions-list"></ul>
             </div>
             <div class="administration panel">
               <h3>Administration</h3>
@@ -157,29 +159,22 @@
               <tbody>
                 <tr class="new-template new">
                   <td>
-                    <div class="medication-input input">
-                      <input type="text" placeholder="Medication" />
-                    </div>
+                    <input class="medication-input input" type="text" placeholder="Medication" />
                   </td>
                   <td>
-                    <div class="dosage-input input">
-                      <input type="text" placeholder="Dosage" />
-                      <span class="post">mg</span>
-                    </div>
+                    <input class="dosage-input input" type="text" placeholder="Dosage" />
                   </td>
                   <td>
-                    <div class="frequency-input select-input">
-                      <select>
-                        <option>Every hour</option>
-                        <option>Every 2 hours</option>
-                        <option>Every 3 hours</option>
-                        <option>Every 4 hours</option>
-                        <option>Every 6 hours</option>
-                        <option>Every 12 hours</option>
-                        <option>Every 24 hours</option>
-                        <option>Other…</option>
-                      </select>
-                    </div>
+                    <select class="frequency-input select-input">
+                      <option>Every hour</option>
+                      <option>Every 2 hours</option>
+                      <option>Every 3 hours</option>
+                      <option>Every 4 hours</option>
+                      <option>Every 6 hours</option>
+                      <option>Every 12 hours</option>
+                      <option>Every 24 hours</option>
+                      <option>Other…</option>
+                    </select>
                   </td>
                   <td>
                     <div class="start-input input">
@@ -222,8 +217,8 @@
                     <td><%= prescription.get('startTime').fromNow() %></td>
                     <td><%= prescription.get('endTime').fromNow() %></td>
                     <td>
-                      <a href="#" class="edit not-implemented"></a>
-                      <a href="#" class="remove not-implemented"></a>
+                      <!--<a href="#" class="edit not-implemented"></a>-->
+                      <a href="#" class="remove remove-existing"></a>
                     </td>
                   </tr>
                 <% }) %>
