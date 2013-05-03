@@ -31,16 +31,16 @@ class Patient extends Backbone.Model
     name: "Anonymous"
     age: 0
     sex: ""
-    ethnicity: "",
-    address: "",
-    importantAllergies: [],
-    allergies: [],
-    history: [],
-    otherMedications: [],
-    visitInformation: [],
-    prescriptions: [],
-    dosages: [],
-    bed: 0,
+    ethnicity: ""
+    address: ""
+    importantAllergies: []
+    allergies: []
+    history: []
+    otherMedications: []
+    visitInformation: []
+    prescriptions: []
+    dosages: []
+    bed: 0
     portraitFilename: ""
 
   firstName: ->
@@ -85,9 +85,8 @@ class Patient extends Backbone.Model
 
 
 class PatientList extends Backbone.Collection
-  model: Patient
   localStorage: new Backbone.LocalStorage("patients")
-
+  model: Patient
 
 class PatientListView extends Backbone.View
   el: $('#patients')
@@ -349,12 +348,16 @@ sortByUrgency = ->
 $ ->
   # Backbone View setup:
   patientListView = new PatientListView
-  patientListView.collection.add patient for patient in testPatients
+  patientListView.collection.fetch()
+  if patientListView.collection.length == 0
+    patientListView.collection.create patient for patient in testPatients
 
   setInterval ->
     patientListView.rerender()
+    _.each patientListView.collection.models, (patient) ->
+      patientListView.collection.sync 'update', patient
     console.log '.'
-  , 1000
+  , 2000
   sortByName()
 
   patientDocumentView = new PatientDocumentView

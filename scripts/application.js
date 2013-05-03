@@ -180,9 +180,9 @@
       PatientList.__super__.constructor.apply(this, arguments);
     }
 
-    PatientList.prototype.model = Patient;
-
     PatientList.prototype.localStorage = new Backbone.LocalStorage("patients");
+
+    PatientList.prototype.model = Patient;
 
     return PatientList;
 
@@ -510,14 +510,20 @@
   $(function() {
     var patient, patientDocumentView, patientListView, _i, _len;
     patientListView = new PatientListView;
-    for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
-      patient = testPatients[_i];
-      patientListView.collection.add(patient);
+    patientListView.collection.fetch();
+    if (patientListView.collection.length === 0) {
+      for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
+        patient = testPatients[_i];
+        patientListView.collection.create(patient);
+      }
     }
     setInterval(function() {
       patientListView.rerender();
+      _.each(patientListView.collection.models, function(patient) {
+        return patientListView.collection.sync('update', patient);
+      });
       return console.log('.');
-    }, 1000);
+    }, 2000);
     sortByName();
     patientDocumentView = new PatientDocumentView;
     $("#sort-by-name").click(function(event) {
