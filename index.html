@@ -71,10 +71,16 @@
         Next dosage
         <em>
           <%
-            if (patient.nextDose() !== null)
-              print(patient.nextDose().get('scheduledTime').fromNow());
-            else
+            var nextDose = patient.nextDose();
+            if (nextDose !== null) {
+              var nextTime = nextDose.get('scheduledTime');
+              if (nextTime < moment()) 
+                print(nextTime.fromNow(true) + ' overdue');
+              else
+                print(patient.nextDose().get('scheduledTime').fromNow());
+            } else {
               print('none');
+            }
           %>
         </em>
         <span class="light <%= patient.status() %>"><%= patient.status() %></span>
