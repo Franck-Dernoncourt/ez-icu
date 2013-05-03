@@ -1299,6 +1299,7 @@ section#patient-list {
               background-image: -webkit-linear-gradient(#b13636, #631e1e);
               background-image: linear-gradient(#b13636, #631e1e); }
       section#patient-list #patients > li .medication {
+        display: none;
         -webkit-transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
         -moz-transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
         transition: max-height 0.2s ease-in-out, margin 0.1s ease-in-out;
@@ -1400,6 +1401,10 @@ section#patient-list {
                 width: 36%; }
               section#patient-list #patients > li .medication .medication-content .overview .panel.administration {
                 width: 36%; }
+                section#patient-list #patients > li .medication .medication-content .overview .panel.administration ol li.stat {
+                  list-style-type: none;
+                  font-style: italic;
+                  margin-top: 10px; }
           section#patient-list #patients > li .medication .medication-content .prescription {
             text-align: center; }
             section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions {
@@ -1499,29 +1504,36 @@ section#patient-list {
                     display: inline; }
             section#patient-list #patients > li .medication .medication-content .prescription .button {
               margin: 10px auto 0; }
-          section#patient-list #patients > li .medication .medication-content .administration table.dosages {
+          section#patient-list #patients > li .medication .medication-content .administration table.doses {
             width: 100%;
             border-spacing: 0; }
-            section#patient-list #patients > li .medication .medication-content .administration table.dosages td:last-child, section#patient-list #patients > li .medication .medication-content .administration table.dosages th:last-child {
+            section#patient-list #patients > li .medication .medication-content .administration table.doses td:last-child, section#patient-list #patients > li .medication .medication-content .administration table.doses th:last-child {
               width: 75px;
-              text-align: center; }
-            section#patient-list #patients > li .medication .medication-content .administration table.dosages th {
+              text-align: right; }
+            section#patient-list #patients > li .medication .medication-content .administration table.doses th {
               border-bottom: 1px solid #8b94a1;
               padding-bottom: 5px; }
-            section#patient-list #patients > li .medication .medication-content .administration table.dosages td {
+            section#patient-list #patients > li .medication .medication-content .administration table.doses td {
               padding: 7px 0;
               border-bottom: 1px solid #8b94a1;
               border-top: 1px solid #c3c8cf; }
-              section#patient-list #patients > li .medication .medication-content .administration table.dosages td .undo {
+              section#patient-list #patients > li .medication .medication-content .administration table.doses td .undo {
                 display: none;
                 color: rgba(51, 51, 51, 0.5); }
-            section#patient-list #patients > li .medication .medication-content .administration table.dosages tr:last-child td {
+                section#patient-list #patients > li .medication .medication-content .administration table.doses td .undo a {
+                  color: rgba(51, 51, 51, 0.7); }
+            section#patient-list #patients > li .medication .medication-content .administration table.doses tr:last-child td {
               border-bottom: none; }
-            section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done {
+            section#patient-list #patients > li .medication .medication-content .administration table.doses tr.done {
               color: rgba(51, 51, 51, 0.5); }
-              section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done .undo {
-                display: inline-block; }
-              section#patient-list #patients > li .medication .medication-content .administration table.dosages tr.done .done {
+              section#patient-list #patients > li .medication .medication-content .administration table.doses tr.done .undo {
+                display: inline-block;
+                width: 250px;
+                font-style: italic; }
+                section#patient-list #patients > li .medication .medication-content .administration table.doses tr.done .undo a {
+                  margin-left: 5px;
+                  font-style: normal; }
+              section#patient-list #patients > li .medication .medication-content .administration table.doses tr.done .done {
                 display: none; }
 
 section#information {

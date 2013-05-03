@@ -328,6 +328,7 @@ section#patient-list {
         }
       }
       .medication {
+        display: none;
         @include transition(max-height 0.2s ease-in-out, margin 0.1s ease-in-out);
         margin: 0 15px;
         text-shadow: 0 1px 0 lighten($medication-background, 10%);
@@ -439,6 +440,13 @@ section#patient-list {
               }
               &.administration {
                 width: 36%;
+                ol {
+                  li.stat {
+                    list-style-type: none;
+                    font-style: italic;
+                    margin-top: 10px;
+                  }
+                }
               }
             }
           }
@@ -571,12 +579,12 @@ section#patient-list {
             }
           }
           .administration {
-            table.dosages {
+            table.doses {
               width: 100%;
               border-spacing: 0;
               td:last-child, th:last-child {
                 width: 75px;
-                text-align: center;
+                text-align: right;
               }
               th {
                 border-bottom: 1px solid darken($medication-background, 10%);
@@ -589,6 +597,9 @@ section#patient-list {
                 .undo {
                   display: none;
                   color: rgba($medication-foreground, 0.5);
+                  a {
+                    color: rgba($medication-foreground, 0.7);
+                  }
                 }
               }
               tr {
@@ -601,6 +612,12 @@ section#patient-list {
                   color: rgba($medication-foreground, 0.5);
                   .undo {
                     display: inline-block;
+                    width: 250px;
+                    font-style: italic;
+                    a {
+                      margin-left: 5px;
+                      font-style: normal;
+                    }
                   }
                   .done {
                     display: none;

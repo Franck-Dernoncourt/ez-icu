@@ -1,68 +1,356 @@
 (function() {
-  var Patient, bush, franck, kamran, mohammad, obama, putin, robin, sortByBed, sortByName, sortByUrgency, testPatients, zuckerberg;
+  var Dose, DoseRowView, Patient, PatientDocumentView, PatientList, PatientListItemView, PatientListView, Prescription, franck, kamran, mohammad, robin, sortByBed, sortByName, sortByUrgency, testPatients,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Patient = (function() {
+  Prescription = (function(_super) {
 
-    function Patient(data) {
-      this.name = data.name;
-      this.age = data.age;
-      this.sex = data.sex;
-      this.ethnicity = data.ethnicity;
-      this.address = data.address;
-      this.importantAllergies = data.importantAllergies;
-      this.allergies = data.allergies;
-      this.history = data.history;
-      this.bed = data.bed;
-      this.visitInformation = data.visitInformation;
-      this.otherMedications = data.otherMedications;
-      this.portraitFilename = data.portraitFilename;
-      this.prescriptions = data.prescriptions;
-      this.dosages = data.dosages;
+    __extends(Prescription, _super);
+
+    function Prescription() {
+      Prescription.__super__.constructor.apply(this, arguments);
     }
 
-    Patient.prototype.status = function() {
-      if (moment().add('minutes', 5) > this.nextDosage()) {
-        return "warning";
-      } else if (moment() > this.nextDosage()) {
-        return "alert";
-      } else {
-        return "ok";
-      }
+    Prescription.prototype.defaults = {
+      medication: "",
+      dosage: "",
+      interval: null,
+      startTime: moment(),
+      endTime: moment()
     };
 
-    Patient.prototype.nextDosage = function() {
-      var d, upcomingDoses, _i, _len, _ref;
-      _ref = this.dosages;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        if (d.givenTime === null) upcomingDoses = d.scheduledTime;
+    Prescription.prototype.initialize = function() {
+      var time, _results;
+      this.set('doses', []);
+      time = this.get('startTime').clone();
+      _results = [];
+      while (time <= this.get('endTime')) {
+        this.get('doses').push(new Dose({
+          prescription: this,
+          scheduledTime: time.clone(),
+          givenTime: null
+        }));
+        _results.push(time.add(this.get('interval')));
       }
-      return moment(Math.min(upcomingDoses));
+      return _results;
+    };
+
+    return Prescription;
+
+  })(Backbone.Model);
+
+  Dose = (function(_super) {
+
+    __extends(Dose, _super);
+
+    function Dose() {
+      Dose.__super__.constructor.apply(this, arguments);
+    }
+
+    Dose.prototype.defaults = {
+      prescription: null,
+      scheduledTime: null,
+      givenTime: null
+    };
+
+    Dose.prototype.given = function() {
+      return this.get('givenTime') !== null;
+    };
+
+    return Dose;
+
+  })(Backbone.Model);
+
+  Patient = (function(_super) {
+
+    __extends(Patient, _super);
+
+    function Patient() {
+      Patient.__super__.constructor.apply(this, arguments);
+    }
+
+    Patient.prototype.defaults = {
+      name: "Anonymous",
+      age: 0,
+      sex: "",
+      ethnicity: "",
+      address: "",
+      importantAllergies: [],
+      allergies: [],
+      history: [],
+      otherMedications: [],
+      visitInformation: [],
+      prescriptions: [],
+      dosages: [],
+      bed: 0,
+      portraitFilename: ""
     };
 
     Patient.prototype.firstName = function() {
-      return this.name.split(" ")[0];
+      return this.get('name').split(" ")[0];
     };
 
     Patient.prototype.lastName = function() {
-      return this.name.split(" ")[1];
+      return this.get('name').split(" ")[1];
     };
 
-    Patient.prototype.listItem = function() {
-      return $("<li></li>").html(_.template($("#list-item-template").html(), {
-        patient: this
-      }));
+    Patient.prototype.doses = function() {
+      var doses, prescription;
+      doses = _.flatten([
+        (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.get('prescriptions');
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            prescription = _ref[_i];
+            _results.push(prescription.get('doses'));
+          }
+          return _results;
+        }).call(this)
+      ]);
+      return _.sortBy(doses, function(dose) {
+        return dose.get('scheduledTime');
+      });
     };
 
-    Patient.prototype.patientDocument = function() {
-      return $("<div></div>").html(_.template($("#patient-document-template").html(), {
-        patient: this
-      }));
+    Patient.prototype.mostRecentDoseGiven = function() {
+      var givenDoses;
+      givenDoses = _.filter(this.doses(), function(dose) {
+        return dose.given();
+      });
+      if (givenDoses.length > 0) {
+        return givenDoses[givenDoses.length - 1];
+      } else {
+        return null;
+      }
+    };
+
+    Patient.prototype.giveAllPastDoses = function() {
+      var dose, _i, _len, _ref, _results;
+      _ref = this.doses();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        dose = _ref[_i];
+        if (dose.get('scheduledTime') < moment()) {
+          _results.push(dose.set('givenTime', dose.get('scheduledTime')));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Patient.prototype.numUpcomingDoses = function() {
+      return _.filter(this.doses(), function(dose) {
+        return !dose.given();
+      }).length;
+    };
+
+    Patient.prototype.nextDose = function() {
+      var nextDoses;
+      nextDoses = _.filter(this.doses(), function(dose) {
+        return !dose.given();
+      });
+      if (nextDoses.length > 0) {
+        return nextDoses[0];
+      } else {
+        return null;
+      }
+    };
+
+    Patient.prototype.status = function() {
+      if (this.nextDose() === null || this.nextDose().get('scheduledTime') > moment().add(5, 'minutes')) {
+        return 'ok';
+      } else if (this.nextDose().get('scheduledTime') > moment()) {
+        return 'warning';
+      } else {
+        return 'alert';
+      }
     };
 
     return Patient;
 
-  })();
+  })(Backbone.Model);
+
+  PatientList = (function(_super) {
+
+    __extends(PatientList, _super);
+
+    function PatientList() {
+      PatientList.__super__.constructor.apply(this, arguments);
+    }
+
+    PatientList.prototype.model = Patient;
+
+    PatientList.prototype.localStorage = new Backbone.LocalStorage("patients");
+
+    return PatientList;
+
+  })(Backbone.Collection);
+
+  PatientListView = (function(_super) {
+
+    __extends(PatientListView, _super);
+
+    function PatientListView() {
+      PatientListView.__super__.constructor.apply(this, arguments);
+    }
+
+    PatientListView.prototype.el = $('#patients');
+
+    PatientListView.prototype.initialize = function() {
+      _.bindAll(this);
+      this.collection = new PatientList;
+      this.collection.bind('add', this.appendPatient);
+      return this.patientListItemViews = [];
+    };
+
+    PatientListView.prototype.rerender = function() {
+      var patientListItemView, _i, _len, _ref;
+      _ref = this.patientListItemViews;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        patientListItemView = _ref[_i];
+        patientListItemView.rerender();
+      }
+      return this;
+    };
+
+    PatientListView.prototype.appendPatient = function(patient) {
+      var patientListItemView;
+      patientListItemView = new PatientListItemView({
+        model: patient
+      });
+      this.patientListItemViews.push(patientListItemView);
+      return $(this.el).append(patientListItemView.render().el);
+    };
+
+    return PatientListView;
+
+  })(Backbone.View);
+
+  PatientListItemView = (function(_super) {
+
+    __extends(PatientListItemView, _super);
+
+    function PatientListItemView() {
+      PatientListItemView.__super__.constructor.apply(this, arguments);
+    }
+
+    PatientListItemView.prototype.tagName = 'li';
+
+    PatientListItemView.prototype.initialize = function() {
+      $(this.el).data('patient', this.model);
+      return this.doseRowViews = [];
+    };
+
+    PatientListItemView.prototype.render = function() {
+      var dose, doseRowView, _i, _len, _ref;
+      $(this.el).html(_.template($("#list-item-template").html(), {
+        patient: this.model
+      }));
+      _ref = this.model.doses();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        dose = _ref[_i];
+        doseRowView = new DoseRowView({
+          model: dose
+        });
+        this.doseRowViews.push(doseRowView);
+        $(this.el).find('.doses tbody').append(doseRowView.render().el);
+      }
+      this.rerender();
+      return this;
+    };
+
+    PatientListItemView.prototype.rerender = function() {
+      var doseRowView, _i, _len, _ref;
+      _ref = this.doseRowViews;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        doseRowView = _ref[_i];
+        doseRowView.render();
+      }
+      $(this.el).find(".listing").html(_.template($("#patient-listing-template").html(), {
+        patient: this.model
+      }));
+      $(this.el).find(".administration-list").html(_.template($("#administration-list-template").html(), {
+        patient: this.model
+      }));
+      this.setNextDose();
+      return this;
+    };
+
+    PatientListItemView.prototype.setNextDose = function() {
+      if (this.model.nextDose()) {
+        return $(this.el).data('next-dose', this.model.nextDose().get('scheduledTime').valueOf());
+      } else {
+        return $(this.el).data('next-dose', null);
+      }
+    };
+
+    return PatientListItemView;
+
+  })(Backbone.View);
+
+  PatientDocumentView = (function(_super) {
+
+    __extends(PatientDocumentView, _super);
+
+    function PatientDocumentView() {
+      PatientDocumentView.__super__.constructor.apply(this, arguments);
+    }
+
+    PatientDocumentView.prototype.el = $('#patient-document');
+
+    PatientDocumentView.prototype.renderPatient = function(patient) {
+      $(this.el).html(_.template($("#patient-document-template").html(), {
+        patient: patient
+      }));
+      return this;
+    };
+
+    return PatientDocumentView;
+
+  })(Backbone.View);
+
+  DoseRowView = (function(_super) {
+
+    __extends(DoseRowView, _super);
+
+    function DoseRowView() {
+      DoseRowView.__super__.constructor.apply(this, arguments);
+    }
+
+    DoseRowView.prototype.tagName = 'tr';
+
+    DoseRowView.prototype.render = function() {
+      $(this.el).html(_.template($("#dose-row-template").html(), {
+        dose: this.model
+      }));
+      if (this.model.given()) {
+        $(this.el).addClass('done');
+      } else {
+        $(this.el).removeClass('done');
+      }
+      return this;
+    };
+
+    DoseRowView.prototype.done = function() {
+      this.model.set('givenTime', moment());
+      return this.render();
+    };
+
+    DoseRowView.prototype.undo = function() {
+      this.model.set('givenTime', null);
+      return this.render();
+    };
+
+    DoseRowView.prototype.events = {
+      'click .done': 'done',
+      'click .undo': 'undo'
+    };
+
+    return DoseRowView;
+
+  })(Backbone.View);
 
   kamran = new Patient({
     name: "Kamran Khan",
@@ -76,31 +364,13 @@
     otherMedications: ["Daily aspirin <em>100mg/day</em>"],
     visitInformation: ["Admitted with chest pain <em>2 days ago</em>", "In ICU after suspected cardiac arrest <em>14 hours ago</em>"],
     prescriptions: [
-      {
+      new Prescription({
         medication: "Aspirin",
         dosage: "100mg",
-        frequency: moment.duration(1, 'hours'),
-        start: moment().subtract('hours', 2).add('minutes', 2),
-        end: moment().add('hours', 1).add('minutes', 2)
-      }
-    ],
-    dosages: [
-      {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: moment().add('minutes', 2),
-        givenTime: null
-      }, {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: moment().subtract('hours', 1).add('minutes', 2),
-        givenTime: moment().subtract('hours', 1).add('minutes', 2)
-      }, {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: moment().subtract('hours', 2).add('minutes', 2),
-        givenTime: moment().subtract('hours', 2).add('minutes', 2)
-      }
+        interval: moment.duration(1, 'hours'),
+        startTime: moment().subtract(2, 'hours').add(2, 'minutes'),
+        endTime: moment().add(1, 'hours').add(2, 'minutes')
+      })
     ],
     bed: 3,
     portraitFilename: "kamran.jpg"
@@ -118,26 +388,13 @@
     visitInformation: ["Admitted with head trauma <em>1 day ago</em>", "In ICU after suspected cerebral hemorrhage <em>3 hours ago</em>"],
     history: ["Family history of hypertension"],
     prescriptions: [
-      {
+      new Prescription({
         medication: "Morphine",
         dosage: "100mg",
-        frequency: moment.duration(2, 'hours'),
-        start: moment().subtract('minutes', 15),
-        end: moment().add('hours', 4).subtract('minutes', 15)
-      }
-    ],
-    dosages: [
-      {
-        medication: "Morphine",
-        dosage: "100mg",
-        scheduledTime: moment().add('minutes', 45),
-        givenTime: null
-      }, {
-        medication: "Morphine",
-        dosage: "100mg",
-        scheduledTime: moment().subtract('minutes', 15),
-        givenTime: moment().subtract('minutes', 15)
-      }
+        interval: moment.duration(2, 'hours'),
+        startTime: moment().subtract(15, 'minutes'),
+        endTime: moment().add(4, 'hours').subtract(15, 'minutes')
+      })
     ],
     bed: 7,
     portraitFilename: "robin.jpg"
@@ -155,34 +412,14 @@
     visitInformation: ["Admitted with difficulty breathing <em>2 days ago</em>"],
     history: ["Family history of hypertension", "Appendectomy <em>5 May 2002</em>"],
     prescriptions: [
-      {
+      new Prescription({
         medication: "Aspirin",
         dosage: "100mg",
-        frequency: "Every hour <em>Q1H</em>",
-        start: "2 hours ago <em>2 dosages given</em>",
-        end: "in 57 minutes <em>2 dosages remaining</em>"
-      }
+        interval: moment.duration(1, 'hours'),
+        startTime: moment().subtract(2, 'hours').add(11, 'minutes'),
+        endTime: moment().add(4, 'hours').add(11, 'minutes')
+      })
     ],
-    dosages: [
-      {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: "3 minutes ago",
-        done: false
-      }, {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: "1 hour, 3 minutes ago",
-        done: true
-      }, {
-        medication: "Aspirin",
-        dosage: "100mg",
-        scheduledTime: "about 2 hours ago",
-        done: true
-      }
-    ],
-    nextDosage: "3 min. ago",
-    status: "alert",
     bed: 5,
     portraitFilename: "mohammad.jpg"
   });
@@ -199,106 +436,31 @@
     visitInformation: ["Admitted with difficulty breathing <em>2 days ago</em>"],
     history: ["Family history of hyperglycemia"],
     prescriptions: [
-      {
+      new Prescription({
         medication: "Morphine",
         dosage: "100mg",
-        frequency: "Every 2 hours <em>Q2H</em>",
-        start: "54 minutes ago <em>1 dosage given</em>",
-        end: "in 3 hours, 6 minutes <em>4 dosages remaining</em>"
-      }, {
+        interval: moment.duration(2, 'hours'),
+        startTime: moment().subtract(54, 'minutes'),
+        endTime: moment().add(4, 'hours').subtract(54, 'minutes')
+      }), new Prescription({
         medication: "Naproxen",
         dosage: "30mg",
-        frequency: "Every 24 hours <em>Q1D</em>",
-        start: "9 hours ago <em>1 dosage given</em>",
-        end: "in 6 days, 15 hours <em>7 dosages remaining</em>"
-      }
+        interval: moment.duration(24, 'hours'),
+        startTime: moment().subtract(9, 'hours'),
+        endTime: moment().add(6, 'days').subtract(9, 'hours')
+      })
     ],
-    dosages: [
-      {
-        medication: "Morphine",
-        dosage: "100mg",
-        scheduledTime: "in 6 minutes",
-        done: false
-      }, {
-        medication: "Naproxen",
-        dosage: "30mg",
-        scheduledTime: "in about 15 hours",
-        done: false
-      }, {
-        medication: "Morphine",
-        dosage: "100mg",
-        scheduledTime: "54 minutes ago",
-        done: true
-      }, {
-        medication: "Naproxen",
-        dosage: "30mg",
-        scheduledTime: "9 hours ago",
-        done: true
-      }
-    ],
-    nextDosage: "in 6 min.",
-    status: "warning",
     bed: 9,
     portraitFilename: "franck.jpg"
   });
 
-  putin = $.extend({}, kamran);
+  testPatients = [kamran, robin, franck, mohammad];
 
-  putin.name = "Vladamir Putin";
+  franck.giveAllPastDoses();
 
-  putin.ethnicity = "White";
+  mohammad.giveAllPastDoses();
 
-  putin.address = "Russia";
-
-  putin.portraitFilename = "putin.jpg";
-
-  putin.age = 60;
-
-  putin.bed = 11;
-
-  obama = $.extend({}, mohammad);
-
-  obama.name = "Barack Obama";
-
-  obama.ethnicity = "Black";
-
-  obama.address = "The White House";
-
-  obama.portraitFilename = "obama.jpg";
-
-  obama.age = 51;
-
-  obama.bed = 12;
-
-  bush = $.extend({}, robin);
-
-  bush.name = "George Bush";
-
-  bush.ethnicity = "White";
-
-  bush.address = "New Haven, CT";
-
-  bush.portraitFilename = "bush.jpg";
-
-  bush.age = 66;
-
-  bush.bed = 15;
-
-  zuckerberg = $.extend({}, franck);
-
-  zuckerberg.name = "Mark Zuckerberg";
-
-  zuckerberg.ethnicity = "White";
-
-  zuckerberg.address = "Menlo Park, CA";
-
-  zuckerberg.portraitFilename = "zuckerberg.jpg";
-
-  zuckerberg.age = 28;
-
-  zuckerberg.bed = 13;
-
-  testPatients = [kamran, robin];
+  kamran.giveAllPastDoses();
 
   sortByName = function() {
     var $list, listItems;
@@ -336,8 +498,8 @@
     listItems = $list.children("li").get();
     listItems.sort(function(a, b) {
       var aVal, bVal;
-      aVal = parseInt($(a).find(".next-dose-ms").text(), 10);
-      bVal = parseInt($(b).find(".next-dose-ms").text(), 10);
+      aVal = $(a).data("next-dose");
+      bVal = $(b).data("next-dose");
       if (aVal < bVal) return -1;
       if (aVal > bVal) return 1;
       return 0;
@@ -346,7 +508,18 @@
   };
 
   $(function() {
-    var patient, _i, _len;
+    var patient, patientDocumentView, patientListView, _i, _len;
+    patientListView = new PatientListView;
+    for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
+      patient = testPatients[_i];
+      patientListView.collection.add(patient);
+    }
+    setInterval(function() {
+      patientListView.rerender();
+      return console.log('.');
+    }, 1000);
+    sortByName();
+    patientDocumentView = new PatientDocumentView;
     $("#sort-by-name").click(function(event) {
       event.stopPropagation();
       event.preventDefault();
@@ -374,13 +547,6 @@
       $(this).addClass("active");
       return sortByUrgency();
     });
-    for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
-      patient = testPatients[_i];
-      patient.listItem().data({
-        patient: patient
-      }).appendTo("#patients");
-    }
-    sortByName();
     $(document).on("click", ".not-implemented", {}, function(event) {
       event.stopPropagation();
       event.preventDefault();
@@ -402,17 +568,7 @@
       event.preventDefault();
       return $(this).parents("tr").remove();
     });
-    $(".done").click(function(event) {
-      event.stopPropagation();
-      event.preventDefault();
-      return $(this).parents("tr").addClass("done");
-    });
-    $(".undo").click(function(event) {
-      event.stopPropagation();
-      event.preventDefault();
-      return $(this).parents("tr").removeClass("done");
-    });
-    $(".add-prescription").click(function(event) {
+    $(document).on("click", ".add-prescription", {}, function(event) {
       var $newRow, $table;
       event.stopPropagation();
       event.preventDefault();
@@ -420,7 +576,7 @@
       $newRow = $table.find(".new-template").clone().removeClass("new-template");
       return $newRow.appendTo($table.find("tbody")).hide().slideDown(200);
     });
-    $(".medication-tabs a").click(function() {
+    $(document).on("click", ".medication-tabs a", {}, function(event) {
       var tabName;
       if ($(this).hasClass("active")) return;
       $(this).parents(".medication-tabs").find("a").removeClass("active");
@@ -430,9 +586,9 @@
         return $(this).filter("." + tabName).slideDown(100);
       });
     });
-    $(".medication-tabs a[data-tab=overview]").click();
-    $(".listing").click(function() {
+    $(document).on("click", ".listing", {}, function(event) {
       var $li;
+      $(this).siblings(".medication").find(".medication-tabs a[data-tab=overview]").click();
       $li = $(this).parents("li");
       if ($li.hasClass("active")) {
         $li.removeClass("active");
@@ -449,12 +605,11 @@
         $("body").addClass("patient-selected");
         $("#add-patient").addClass("secondary");
         return $("#patient-document").stop().fadeOut(100, function() {
-          $("#patient-document").html($li.data("patient").patientDocument());
+          patientDocumentView.renderPatient($li.data('patient'));
           return $("#patient-document").fadeIn(300);
         });
       }
     });
-    $("#patients > li .medication").slideUp(10);
     return $("#number-of-patients .count").text(testPatients.length);
   });
 

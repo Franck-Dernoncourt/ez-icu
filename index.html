@@ -11,7 +11,7 @@
     <title>EZ-ICU (6.831 GR4)</title>
     <meta name="viewport" content="width=device-width">
 
-    <script type="text/javascript" src="//use.typekit.net/lrx4grx.js"></script>
+    <script type="text/javascript" src="http://use.typekit.net/lrx4grx.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
     <link rel="stylesheet" href="styles/application.css">
@@ -20,7 +20,6 @@
     <script src="scripts/libraries/underscore.js"></script>
     <script src="scripts/libraries/backbone.js"></script>
     <script src="scripts/libraries/backbone.localStorage.js"></script>
-    <script src="scripts/application.js"></script>
   </head>
   <body>
     <div id="flash-message">That feature isn't implemented for this low-depth prototype—sorry!</div>
@@ -57,23 +56,55 @@
       </div>
     </section>
 
+    <script type="text/html" id="patient-listing-template">
+      <div class="portrait">
+        <img src="images/patients/<%= patient.get('portraitFilename') %>" alt="" />
+      </div>
+      <h2 class="name"><strong><%= patient.lastName() %></strong>, <%= patient.firstName() %></h2>
+      <span class="bed">
+        Bed <span class="bed-number"><%= patient.get('bed') %></span>
+      </span>
+      <span class="status">
+        Next dosage
+        <em>
+          <%
+            if (patient.nextDose() !== null)
+              print(patient.nextDose().get('scheduledTime').fromNow());
+            else
+              print('none');
+          %>
+        </em>
+        <span class="light <%= patient.status() %>"><%= patient.status() %></span>
+      </span>
+    </script>
+
+    <script type="text/html" id="administration-list-template">
+      <% if (patient.mostRecentDoseGiven() !== null) { %>
+        <% dose = patient.mostRecentDoseGiven() %>
+        <li <% if (dose.get('givenTime') !== null) print('class="done"') %>>
+          <h4><%= dose.get('prescription').get('medication') %></h4>
+          <span class="additional"><%= dose.get('prescription').get('dosage') %>, <%= dose.get('scheduledTime').fromNow() %></span>
+        </li>
+      <% } %>
+
+      <% if (patient.nextDose() !== null) { %>
+        <% dose = patient.nextDose() %>
+        <li <% if (dose.get('givenTime') !== null) print('class="done"') %>>
+          <h4><%= dose.get('prescription').get('medication') %></h4>
+          <span class="additional"><%= dose.get('prescription').get('dosage') %>, <%= dose.get('scheduledTime').fromNow() %></span>
+        </li>
+      <% } %>
+
+      <% if (patient.numUpcomingDoses() > 1) { %>
+        <li class="stat">
+          <%= patient.numUpcomingDoses() - 1 %>
+          more dose<% if (patient.numUpcomingDoses() !== 2) print('s') %>
+        </li>
+      <% } %>
+    </script>
+
     <script type="text/html" id="list-item-template">
-      <div class="listing">
-        <div class="portrait">
-          <img src="images/patients/<%= patient.portraitFilename %>" alt="" />
-        </div>
-        <h2 class="name"><strong><%= patient.lastName() %></strong>, <%= patient.firstName() %></h2>
-        <span class="bed">
-          Bed <span class="bed-number"><%= patient.bed %></span>
-        </span>
-        <span class="status">
-          Next dosage <em><%= patient.nextDosage().fromNow() %></em>
-          <span class="light <%= patient.status() %>"><%= patient.status() %></span>
-        </span>
-      </div>
-      <div class="next-dose-ms" style="display: none;">
-        <%= patient.nextDosage() %>
-      </div>
+      <div class="listing"></div>
       <div class="medication">
         <ul class="medication-tabs">
           <li><a href="#" data-tab="overview">Overview</a></li>
@@ -97,24 +128,17 @@
             <div class="prescriptions panel">
               <h3>Prescriptions</h3>
               <ul>
-                <% _.each(patient.prescriptions, function (prescription) { %>
+                <% _.each(patient.get('prescriptions'), function (prescription) { %>
                   <li>
-                    <h4><%= prescription.medication %> <em><%= prescription.dosage %></em></h4>
-                    <span class="additional">every <%= prescription.frequency.asHours() %> hours</span>
+                    <h4><%= prescription.get('medication') %> <em><%= prescription.get('dosage') %></em></h4>
+                    <span class="additional">every <%= prescription.get('interval').asHours() %> hours</span>
                   </li>
                 <% }) %>
               </ul>
             </div>
             <div class="administration panel">
               <h3>Administration</h3>
-              <ol>
-                <% _.each(patient.dosages, function (dosage) { %>
-                  <li <% if (dosage.givenTime !== null) print('class="done"') %>>
-                    <h4><%= dosage.medication %></h4>
-                    <span class="additional"><%= dosage.dosage %>, <%= dosage.scheduledTime.fromNow() %></span>
-                  </li>
-                <% }) %>
-              </ol>
+              <ol class="administration-list"></ol>
             </div>
           </div>
           <div class="prescription">
@@ -189,13 +213,13 @@
                     <a href="#" class="remove remove-new"></a>
                   </td>
                 </tr>
-                <% _.each(patient.prescriptions, function (prescription) { %>
+                <% _.each(patient.get('prescriptions'), function (prescription) { %>
                   <tr>
-                    <td><%= prescription.medication %></td>
-                    <td><%= prescription.dosage %></td>
-                    <td>every <%= prescription.frequency.asHours() %> hours</td>
-                    <td><%= prescription.start.fromNow() %></td>
-                    <td><%= prescription.end.fromNow() %></td>
+                    <td><%= prescription.get('medication') %></td>
+                    <td><%= prescription.get('dosage') %></td>
+                    <td>every <%= prescription.get('interval').asHours() %> hours</td>
+                    <td><%= prescription.get('startTime').fromNow() %></td>
+                    <td><%= prescription.get('endTime').fromNow() %></td>
                     <td>
                       <a href="#" class="edit not-implemented"></a>
                       <a href="#" class="remove not-implemented"></a>
@@ -207,7 +231,7 @@
             <a href="#" class="add-prescription button">Add prescription</a>
           </div>
           <div class="administration">
-            <table class="dosages">
+            <table class="doses">
               <thead>
                 <tr>
                   <th>Medication</th>
@@ -216,42 +240,47 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
-              <% _.each(patient.dosages, function (dosage) { %>
-                <tr <% if (dosage.givenTime !== null) print('class="done"') %>>
-                  <td><%= dosage.medication %></td>
-                  <td><%= dosage.dosage %></td>
-                  <td><%= dosage.scheduledTime.fromNow() %></td>
-                  <td>
-                    <a href="#" class="done button">Done</a>
-                    <a href="#" class="undo">Undo</a>
-                  </td>
-                </tr>
-              <% }) %>
-              </tbody>
+              <tbody></tbody>
             </table>
           </div>
         </div>
       </div>
     </script>
 
+    <script type="text/html" id="dose-row-template">
+      <td><%= dose.get('prescription').get('medication') %></td>
+      <td><%= dose.get('prescription').get('dosage') %></td>
+      <td><%= dose.get('scheduledTime').fromNow() %></td>
+      <td>
+        <a href="#" class="done button">Done</a>
+        <span class="undo">
+          Given
+          <%
+            if (dose.get('givenTime') !== null)
+              print(dose.get('givenTime').fromNow());
+          %>
+          <a href="#" class="undo-link">Undo</a>
+        </span>
+      </td>
+    </script>
+
     <script type="text/html" id="patient-document-template">
       <div class="portrait">
-        <img src="images/patients/<%= patient.portraitFilename %>" alt="" />
+        <img src="images/patients/<%= patient.get('portraitFilename') %>" alt="" />
       </div>
-      <h2><%= patient.name %></h2>
-      <span class="subtitle"><%= patient.age %>-year-old male</span>
+      <h2><%= patient.get('name') %></h2>
+      <span class="subtitle"><%= patient.get('age') %>-year-old male</span>
       <section>
         <h3><i class="icon-exclamation-sign"></i> Allergies</h3>
         <ul>
-          <% if (patient.importantAllergies.length > 0) { %>
-            <% _.each(patient.importantAllergies, function (allergy) { %>
+          <% if (patient.get('importantAllergies').length > 0) { %>
+            <% _.each(patient.get('importantAllergies'), function (allergy) { %>
               <li class="important">Patient allergic to <%= allergy %></li>
             <% }) %>
           <% } else { %>
             <li class="unimportant">No known allergies to medication</li>
           <% } %>
-          <% _.each(patient.allergies, function (allergy) { %>
+          <% _.each(patient.get('allergies'), function (allergy) { %>
             <li>Patient allergic to <%= allergy %></li>
           <% }) %>
         </ul>
@@ -259,7 +288,7 @@
       <section>
         <h3><i class="icon-plus-sign-alt"></i> Other Medications</h3>
         <ul>
-          <% _.each(patient.otherMedications, function (medication) { %>
+          <% _.each(patient.get('otherMedications'), function (medication) { %>
             <li><%= medication %></li>
           <% }) %>
         </ul>
@@ -267,7 +296,7 @@
       <section>
         <h3><i class="icon-ambulance"></i> Visit Information</h3>
         <ul>
-          <% _.each(patient.visitInformation, function (information) { %>
+          <% _.each(patient.get('visitInformation'), function (information) { %>
             <li><%= information %></li>
           <% }) %>
         </ul>
@@ -275,7 +304,7 @@
       <section>
         <h3><i class="icon-book"></i> Patient History</h3>
         <ul>
-          <% _.each(patient.history, function (historyItem) { %>
+          <% _.each(patient.get('history'), function (historyItem) { %>
             <li><%= historyItem %></li>
           <% }) %>
         </ul>
@@ -285,22 +314,24 @@
         <ul class="demographics">
           <li>
             <span class="label">Sex</span>
-            <span class="data"><%= patient.sex %></span>
+            <span class="data"><%= patient.get('sex') %></span>
           </li>
           <li>
             <span class="label">Age</span>
-            <span class="data"><%= patient.age %> years</span>
+            <span class="data"><%= patient.get('age') %> years</span>
           </li>
           <li>
             <span class="label">Ethnicity</span>
-            <span class="data"><%= patient.ethnicity %></span>
+            <span class="data"><%= patient.get('ethnicity') %></span>
           </li>
           <li>
             <span class="label">Address</span>
-            <span class="data"><%= patient.address %></span>
+            <span class="data"><%= patient.get('address') %></span>
           </li>
         </ul>
       </section>
     </script>
+
+    <script src="scripts/application.js"></script>
   </body>
 </html>

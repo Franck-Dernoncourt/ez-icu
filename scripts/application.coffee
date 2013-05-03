@@ -1,300 +1,314 @@
-# Patient class:
-class Patient
-  constructor: (data) ->
-    @name = data.name
-    @age = data.age
-    @sex = data.sex
-    @ethnicity = data.ethnicity
-    @address = data.address
-    @importantAllergies = data.importantAllergies
-    @allergies = data.allergies
-    @history = data.history
-    @bed = data.bed
-    @visitInformation = data.visitInformation
-    @otherMedications = data.otherMedications
-    @portraitFilename = data.portraitFilename
-    # @nextDosage = data.nextDosage
-    @prescriptions = data.prescriptions
-    @dosages = data.dosages
+class Prescription extends Backbone.Model
+  defaults:
+    medication: ""
+    dosage: ""
+    interval: null
+    startTime: moment()
+    endTime: moment()
 
-  status: ->
-    if moment().add('minutes', 5) > this.nextDosage()
-      "warning"
-    else if moment() > this.nextDosage() 
-      "alert"
-    else
-      "ok"
+  initialize: ->
+    @set 'doses', []
+    time = @get('startTime').clone()
+    while time <= @get 'endTime'
+      @get('doses').push new Dose
+        prescription: @
+        scheduledTime: time.clone()
+        givenTime: null
+      time.add(@get 'interval')
 
-  nextDosage: ->
-    upcomingDoses = d.scheduledTime for d in @dosages when d.givenTime is null
-    moment(Math.min(upcomingDoses))
 
+class Dose extends Backbone.Model
+  defaults:
+    prescription: null
+    scheduledTime: null
+    givenTime: null
+  given: ->
+    @get('givenTime') != null
+
+
+class Patient extends Backbone.Model
+  defaults:
+    name: "Anonymous"
+    age: 0
+    sex: ""
+    ethnicity: "",
+    address: "",
+    importantAllergies: [],
+    allergies: [],
+    history: [],
+    otherMedications: [],
+    visitInformation: [],
+    prescriptions: [],
+    dosages: [],
+    bed: 0,
+    portraitFilename: ""
 
   firstName: ->
-    @name.split(" ")[0]
+    @get('name').split(" ")[0]
 
   lastName: ->
-    @name.split(" ")[1]
+    @get('name').split(" ")[1]
 
-  listItem: ->
-    $("<li></li>").html _.template $("#list-item-template").html(), {patient: @}
+  doses: ->
+    doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions']
+    _.sortBy doses, (dose) -> dose.get 'scheduledTime'
 
-  patientDocument: ->
-    $("<div></div>").html _.template $("#patient-document-template").html(), {patient: @}
+  mostRecentDoseGiven: ->
+    givenDoses = _.filter @doses(), (dose) -> dose.given()
+    if givenDoses.length > 0
+      return givenDoses[givenDoses.length - 1]
+    else
+      return null
+
+  giveAllPastDoses: ->
+    for dose in @doses()
+      if dose.get('scheduledTime') < moment()
+        dose.set 'givenTime', dose.get('scheduledTime')
+
+  numUpcomingDoses: ->
+    _.filter(@doses(), (dose) -> not dose.given()).length
+
+  nextDose: ->
+    nextDoses = _.filter @doses(), (dose) -> not dose.given()
+    if nextDoses.length > 0
+      return nextDoses[0]
+    else
+      return null
+
+  status: ->
+    if this.nextDose() is null or this.nextDose().get('scheduledTime') > moment().add(5, 'minutes')
+      'ok'
+    else if this.nextDose().get('scheduledTime') > moment()
+      'warning'
+    else
+      'alert'
+
+
+class PatientList extends Backbone.Collection
+  model: Patient
+  localStorage: new Backbone.LocalStorage("patients")
+
+
+class PatientListView extends Backbone.View
+  el: $('#patients')
+
+  initialize: ->
+    _.bindAll @
+    @collection = new PatientList
+    @collection.bind 'add', @appendPatient
+    @patientListItemViews = []
+
+  rerender: ->
+    for patientListItemView in @patientListItemViews
+      patientListItemView.rerender()
+    @
+
+  appendPatient: (patient) ->
+    patientListItemView = new PatientListItemView
+      model: patient
+
+    @patientListItemViews.push patientListItemView
+    $(@el).append patientListItemView.render().el
+
+
+class PatientListItemView extends Backbone.View
+  tagName: 'li'
+
+  initialize: ->
+    $(@el).data 'patient', @model
+    @doseRowViews = []
+
+  render: ->
+    $(@el).html _.template $("#list-item-template").html(), {patient: @model}
+    
+    for dose in @model.doses()
+      doseRowView = new DoseRowView
+        model: dose
+      @doseRowViews.push doseRowView
+      $(@el).find('.doses tbody').append doseRowView.render().el
+
+    @rerender()
+    @
+
+  rerender: ->
+    for doseRowView in @doseRowViews
+      doseRowView.render()
+
+    $(@el).find(".listing").html _.template $("#patient-listing-template").html(), {patient: @model}
+    $(@el).find(".administration-list").html _.template $("#administration-list-template").html(), {patient: @model}
+
+    @setNextDose()
+    @
+
+  setNextDose: ->
+    if @model.nextDose()
+      $(@el).data 'next-dose', @model.nextDose().get('scheduledTime').valueOf()
+    else
+      $(@el).data 'next-dose', null
+
+
+class PatientDocumentView extends Backbone.View
+  el: $('#patient-document')
+  renderPatient: (patient) ->
+    $(@el).html _.template $("#patient-document-template").html(), {patient: patient}
+    @
+
+
+class DoseRowView extends Backbone.View
+  tagName: 'tr'
+
+  render: ->
+    $(@el).html _.template $("#dose-row-template").html(), {dose: @model}
+    if @model.given()
+      $(@el).addClass('done')
+    else
+      $(@el).removeClass('done')
+    @
+
+  done: ->
+    @model.set 'givenTime', moment()
+    @render()
+
+  undo: ->
+    @model.set 'givenTime', null
+    @render()
+
+  events:
+    'click .done': 'done'
+    'click .undo': 'undo'
+
 
 # Set up some static test patients:
-kamran = new Patient({
-  name: "Kamran Khan",
-  age: 21,
-  sex: "Male",
-  ethnicity: "South Asian, White",
-  address: "3 Ames St.,<br />Cambridge, MA. 02142",
-  importantAllergies: [],
-  allergies: ["pollen"],
-  history: [
-    "Family history of hypertension",
-    "Family history of hyperglycemia",
-    "Toncilectomy <em> 12 December 2008</em>"
-  ],
-  otherMedications: [
-    "Daily aspirin <em>100mg/day</em>"
-  ],
-  visitInformation: [
-    "Admitted with chest pain <em>2 days ago</em>",
-    "In ICU after suspected cardiac arrest <em>14 hours ago</em>"
-  ],
-  prescriptions: [
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      frequency: moment.duration(1, 'hours'),
-      start: moment().subtract('hours', 2).add('minutes', 2),
-      end: moment().add('hours', 1).add('minutes', 2)
-    }
-  ],
-  dosages: [
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: moment().add('minutes', 2),
-      givenTime: null
-    },
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: moment().subtract('hours', 1).add('minutes', 2),
-      givenTime: moment().subtract('hours', 1).add('minutes', 2)
-    },
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: moment().subtract('hours', 2).add('minutes', 2),
-      givenTime: moment().subtract('hours', 2).add('minutes', 2)
-    },
-  ],
-  bed: 3,
-  portraitFilename: "kamran.jpg"
-})
-
-robin = new Patient({
-  name: "Robin Deits",
-  age: 23,
-  sex: "Male",
-  ethnicity: "White",
-  address: "1 Main St.,<br />Cambridge, MA. 02142",
-  importantAllergies: ["penicillin"],
-  allergies: [],
-  otherMedications: [
-    "<em>Patient not on any other medications</em>"
-  ],
-  visitInformation: [
-    "Admitted with head trauma <em>1 day ago</em>",
-    "In ICU after suspected cerebral hemorrhage <em>3 hours ago</em>"
-  ],
+kamran = new Patient
+  name: "Kamran Khan"
+  age: 21
+  sex: "Male"
+  ethnicity: "South Asian, White"
+  address: "3 Ames St.,<br />Cambridge, MA. 02142"
+  importantAllergies: []
+  allergies: ["pollen"]
   history: [
     "Family history of hypertension"
-  ],
-  prescriptions: [
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      frequency: moment.duration(2, 'hours'),
-      start: moment().subtract('minutes', 15),
-      end: moment().add('hours', 4).subtract('minutes', 15)
-    },
-  ],
-  dosages: [
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      scheduledTime: moment().add('minutes', 45)
-      givenTime: null
-    },
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      scheduledTime: moment().subtract('minutes', 15),
-      givenTime: moment().subtract('minutes', 15)
-    },
-  ],
-  bed: 7,
-  portraitFilename: "robin.jpg"
-})
-
-mohammad = new Patient({
-  name: "Mohammad Ghassemi",
-  age: 24,
-  sex: "Male",
-  ethnicity: "Middle Eastern, White",
-  address: "100 Mass Ave.,<br />Cambridge, MA. 02139",
-  importantAllergies: [],
-  allergies: [],
+    "Family history of hyperglycemia"
+    "Toncilectomy <em> 12 December 2008</em>"
+  ]
   otherMedications: [
-    "Daily Lipitor <em>35mg/day</em>",
+    "Daily aspirin <em>100mg/day</em>"
+  ]
+  visitInformation: [
+    "Admitted with chest pain <em>2 days ago</em>"
+    "In ICU after suspected cardiac arrest <em>14 hours ago</em>"
+  ]
+  prescriptions: [
+    new Prescription
+      medication: "Aspirin"
+      dosage: "100mg"
+      interval: moment.duration(1, 'hours')
+      startTime: moment().subtract(2, 'hours').add(2, 'minutes')
+      endTime: moment().add(1, 'hours').add(2, 'minutes')
+  ]
+  bed: 3
+  portraitFilename: "kamran.jpg"
+
+robin = new Patient
+  name: "Robin Deits"
+  age: 23
+  sex: "Male"
+  ethnicity: "White"
+  address: "1 Main St.,<br />Cambridge, MA. 02142"
+  importantAllergies: ["penicillin"]
+  allergies: []
+  otherMedications: [
+    "<em>Patient not on any other medications</em>"
+  ]
+  visitInformation: [
+    "Admitted with head trauma <em>1 day ago</em>"
+    "In ICU after suspected cerebral hemorrhage <em>3 hours ago</em>"
+  ]
+  history: [
+    "Family history of hypertension"
+  ]
+  prescriptions: [
+    new Prescription
+      medication: "Morphine"
+      dosage: "100mg"
+      interval: moment.duration(2, 'hours')
+      startTime: moment().subtract(15, 'minutes')
+      endTime: moment().add(4, 'hours').subtract(15, 'minutes')
+  ]
+  bed: 7
+  portraitFilename: "robin.jpg"
+
+mohammad = new Patient
+  name: "Mohammad Ghassemi"
+  age: 24
+  sex: "Male"
+  ethnicity: "Middle Eastern, White"
+  address: "100 Mass Ave.,<br />Cambridge, MA. 02139"
+  importantAllergies: []
+  allergies: []
+  otherMedications: [
+    "Daily Lipitor <em>35mg/day</em>"
     "Daily Catapres <em>50mg/day</em>"
-  ],
+  ]
   visitInformation: [
     "Admitted with difficulty breathing <em>2 days ago</em>"
-  ],
+  ]
   history: [
-    "Family history of hypertension",
+    "Family history of hypertension"
     "Appendectomy <em>5 May 2002</em>"
-  ],
+  ]
   prescriptions: [
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      frequency: "Every hour <em>Q1H</em>",
-      start: "2 hours ago <em>2 dosages given</em>"
-      end: "in 57 minutes <em>2 dosages remaining</em>"
-    }
-  ],
-  dosages: [
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: "3 minutes ago",
-      done: false
-    },
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: "1 hour, 3 minutes ago",
-      done: true
-    },
-    {
-      medication: "Aspirin",
-      dosage: "100mg",
-      scheduledTime: "about 2 hours ago",
-      done: true
-    },
-  ],
-  nextDosage: "3 min. ago",
-  status: "alert",
-  bed: 5,
+    new Prescription
+      medication: "Aspirin"
+      dosage: "100mg"
+      interval: moment.duration(1, 'hours')
+      startTime: moment().subtract(2, 'hours').add(11, 'minutes')
+      endTime: moment().add(4, 'hours').add(11, 'minutes')
+  ]
+  bed: 5
   portraitFilename: "mohammad.jpg"
-})
 
-franck = new Patient({
-  name: "Franck Dernoncourt",
-  age: 24,
-  sex: "Male",
-  ethnicity: "White",
-  address: "120 Mass Ave.,<br />Cambridge, MA. 02139",
-  importantAllergies: ["aspirin", "naproxen"],
-  allergies: ["peanuts (mild)"],
+franck = new Patient
+  name: "Franck Dernoncourt"
+  age: 24
+  sex: "Male"
+  ethnicity: "White"
+  address: "120 Mass Ave.,<br />Cambridge, MA. 02139"
+  importantAllergies: ["aspirin", "naproxen"]
+  allergies: ["peanuts (mild)"]
   otherMedications: [
     "Daily Fenofibrate <em>45mg/day</em>",
     "Twice-daily Lovenox <em>20mg/day, 10mg q12h</em>"
-  ],
+  ]
   visitInformation: [
     "Admitted with difficulty breathing <em>2 days ago</em>"
-  ],
+  ]
   history: [
     "Family history of hyperglycemia"
-  ],
+  ]
   prescriptions: [
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      frequency: "Every 2 hours <em>Q2H</em>",
-      start: "54 minutes ago <em>1 dosage given</em>"
-      end: "in 3 hours, 6 minutes <em>4 dosages remaining</em>"
-    },
-    {
+    new Prescription
+      medication: "Morphine"
+      dosage: "100mg"
+      interval: moment.duration(2, 'hours')
+      startTime: moment().subtract(54, 'minutes')
+      endTime: moment().add(4, 'hours').subtract(54, 'minutes')
+    new Prescription
       medication: "Naproxen",
       dosage: "30mg",
-      frequency: "Every 24 hours <em>Q1D</em>",
-      start: "9 hours ago <em>1 dosage given</em>"
-      end: "in 6 days, 15 hours <em>7 dosages remaining</em>"
-    }
-  ],
-  dosages: [
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      scheduledTime: "in 6 minutes",
-      done: false
-    },
-    {
-      medication: "Naproxen",
-      dosage: "30mg",
-      scheduledTime: "in about 15 hours",
-      done: false
-    },
-    {
-      medication: "Morphine",
-      dosage: "100mg",
-      scheduledTime: "54 minutes ago",
-      done: true
-    },
-    {
-      medication: "Naproxen",
-      dosage: "30mg",
-      scheduledTime: "9 hours ago",
-      done: true
-    },
-  ],
-  nextDosage: "in 6 min.",
-  status: "warning",
-  bed: 9,
+      interval: moment.duration(24, 'hours')
+      startTime: moment().subtract(9, 'hours')
+      endTime: moment().add(6, 'days').subtract(9, 'hours')
+  ]
+  bed: 9
   portraitFilename: "franck.jpg"
-})
 
-putin = $.extend {}, kamran
-putin.name = "Vladamir Putin"
-putin.ethnicity = "White"
-putin.address = "Russia"
-putin.portraitFilename = "putin.jpg"
-putin.age = 60
-putin.bed = 11
-
-obama = $.extend {}, mohammad
-obama.name = "Barack Obama"
-obama.ethnicity = "Black"
-obama.address = "The White House"
-obama.portraitFilename = "obama.jpg"
-obama.age = 51
-obama.bed = 12
-
-bush = $.extend {}, robin
-bush.name = "George Bush"
-bush.ethnicity = "White"
-bush.address = "New Haven, CT"
-bush.portraitFilename = "bush.jpg"
-bush.age = 66
-bush.bed = 15
-
-zuckerberg = $.extend {}, franck
-zuckerberg.name = "Mark Zuckerberg"
-zuckerberg.ethnicity = "White"
-zuckerberg.address = "Menlo Park, CA"
-zuckerberg.portraitFilename = "zuckerberg.jpg"
-zuckerberg.age = 28
-zuckerberg.bed = 13
-
-# testPatients = [kamran, robin, franck, mohammad, putin, obama, bush, zuckerberg]
-testPatients = [kamran, robin]
+# Some test data:
+testPatients = [kamran, robin, franck, mohammad]
+franck.giveAllPastDoses()
+mohammad.giveAllPastDoses()
+kamran.giveAllPastDoses()
 
 # Sorting methods:
 sortByName = ->
@@ -323,15 +337,28 @@ sortByUrgency = ->
   $list = $("#patients")
   listItems = $list.children("li").get()
   listItems.sort (a, b) ->
-    aVal = parseInt $(a).find(".next-dose-ms").text(), 10
-    bVal = parseInt $(b).find(".next-dose-ms").text(), 10
+    aVal = $(a).data("next-dose")
+    bVal = $(b).data("next-dose")
     return -1 if aVal < bVal
     return  1 if aVal > bVal
     return  0
   $list.append listItems
 
+
 # On document ready:
 $ ->
+  # Backbone View setup:
+  patientListView = new PatientListView
+  patientListView.collection.add patient for patient in testPatients
+
+  setInterval ->
+    patientListView.rerender()
+    console.log '.'
+  , 1000
+  sortByName()
+
+  patientDocumentView = new PatientDocumentView
+  
   # Add sort handlers:
   $("#sort-by-name").click (event) ->
     event.stopPropagation()
@@ -359,11 +386,6 @@ $ ->
     $("#sort-by-name").removeClass "active"
     $(this).addClass "active"
     sortByUrgency()
-  
-  # Add the patients:
-  for patient in testPatients
-    patient.listItem().data({patient: patient}).appendTo "#patients"
-  sortByName()
 
   # Not implemented notice:
   $(document).on "click", ".not-implemented", {}, (event) ->
@@ -380,21 +402,15 @@ $ ->
     event.stopPropagation()
     event.preventDefault()
     $(this).find("input").focus()
+
+  # Remove new row:
   $(document).on "click", ".remove-new", {}, (event) ->
     event.stopPropagation()
     event.preventDefault()
     $(this).parents("tr").remove()
 
   # Button handlers:
-  $(".done").click (event) ->
-    event.stopPropagation()
-    event.preventDefault()
-    $(this).parents("tr").addClass "done"
-  $(".undo").click (event) ->
-    event.stopPropagation()
-    event.preventDefault()
-    $(this).parents("tr").removeClass "done"
-  $(".add-prescription").click (event) ->
+  $(document).on "click", ".add-prescription", {}, (event) ->
     event.stopPropagation()
     event.preventDefault()
     $table = $(this).parents(".prescription").find("table.prescriptions")
@@ -402,7 +418,7 @@ $ ->
     $newRow.appendTo($table.find "tbody").hide().slideDown 200
 
   # Tab handling:
-  $(".medication-tabs a").click ->
+  $(document).on "click", ".medication-tabs a", {}, (event) ->
     return if $(this).hasClass "active"
     $(this).parents(".medication-tabs").find("a").removeClass "active"
     $(this).addClass "active"
@@ -412,11 +428,9 @@ $ ->
       .slideUp 100, ->
         $(this).filter(".#{tabName}").slideDown 100
 
-  # Auto-expand "Overview" tab:
-  $(".medication-tabs a[data-tab=overview]").click()
-
   # Patient handling:
-  $(".listing").click ->
+  $(document).on "click", ".listing", {}, (event) ->
+    $(this).siblings(".medication").find(".medication-tabs a[data-tab=overview]").click()
     $li = $(this).parents "li"
     if $li.hasClass "active"
       $li.removeClass "active"
@@ -432,9 +446,8 @@ $ ->
       $("body").addClass "patient-selected"
       $("#add-patient").addClass "secondary"
       $("#patient-document").stop().fadeOut 100, ->
-        $("#patient-document").html $li.data("patient").patientDocument()
+        patientDocumentView.renderPatient $li.data('patient')
         $("#patient-document").fadeIn 300
-  $("#patients > li .medication").slideUp 10
 
   # Add count:
   $("#number-of-patients .count").text testPatients.length
