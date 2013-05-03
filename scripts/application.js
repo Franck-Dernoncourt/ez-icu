@@ -592,12 +592,6 @@
       event.preventDefault();
       return $("#flash-message").stop().hide().slideDown(100).delay(1000).fadeOut(500);
     });
-    $(document).on("focus", ".date-time-picker-input", {}, function() {
-      return $(this).siblings(".date-time-picker").slideDown(200);
-    });
-    $(document).on("blur", ".date-time-picker-input", {}, function() {
-      return $(this).siblings(".date-time-picker").slideUp(200);
-    });
     $(document).on("click", ".input", {}, function(event) {
       event.stopPropagation();
       event.preventDefault();
@@ -614,6 +608,11 @@
       event.preventDefault();
       $table = $(this).parents(".prescription").find("table.prescriptions");
       $newRow = $table.find(".new-template").clone().removeClass("new-template");
+      $newRow.find(".date-time-picker-input").datetimepicker({
+        hourGrid: 4,
+        minuteGrid: 10
+      });
+      $newRow.find(".date-time-picker-input").datetimepicker('setDate', new Date);
       return $newRow.appendTo($table.find("tbody")).hide().slideDown(200);
     });
     $(document).on("click", ".medication-tabs a", {}, function(event) {

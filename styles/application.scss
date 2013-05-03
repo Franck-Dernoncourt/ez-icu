@@ -939,12 +939,8 @@ body.patient-selected {
 }
 .ui-datepicker .ui-datepicker-prev span,
 .ui-datepicker .ui-datepicker-next span {
-  display: block;
-  position: absolute;
-  left: 50%;
-  margin-left: -8px;
-  top: 50%;
-  margin-top: -8px;
+  text-indent: 0;
+  font-size: 0.9em;
 }
 .ui-datepicker .ui-datepicker-title {
   margin: 0 2.3em;
@@ -1137,3 +1133,55 @@ body.patient-selected {
   top: 0;
 }
 
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+.ui-datepicker {
+  background: $information-background;
+  text-shadow: 0 1px 0 lighten($information-background, 50%);
+  @include border-radius(3px);
+  line-height: 1;
+  font-size: 0.9em;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0 0 15px rgba(#000, 0.4);
+  .ui-datepicker-next {
+    &::before {
+      content: "\f054";
+    }
+  }
+  .ui-datepicker-prev {
+    &::before {
+      content: "\f055";
+    }
+  }
+  td {
+    text-align: center;
+    a {
+      color: $information-foreground;
+      &.ui-state-active {
+        color: $accent-color;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.ui-slider {
+  @include border-radius(4px);
+  background: rgba(#000, 0.05);
+  .ui-slider-handle {
+    @include linear-gradient(rgba(#fff, 0.1), rgba(#000, 0.1), $fallback: $accent-color);
+    color: lighten($accent-color, 90%);
+    @include border-radius(4px);
+    box-shadow: inset 0 1px 0 lighten($accent-color, 20%), 0 2px 1px rgba(#000, 0.3);
+  }
+}
