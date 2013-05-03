@@ -119,26 +119,29 @@ class PatientListItemView extends Backbone.View
 
   render: ->
     $(@el).html _.template $("#list-item-template").html(), {patient: @model}
-    
+    @rerender()
+    @
+
+  rerender: ->
+    $(@el).find('.doses tbody').empty()
     for dose in @model.doses()
       doseRowView = new DoseRowView
         model: dose
       @doseRowViews.push doseRowView
       $(@el).find('.doses tbody').append doseRowView.render().el
 
-    @rerender()
-    @
+    $(@el).find(".listing")
+      .html _.template $("#patient-listing-template").html(), {patient: @model}
+    
+    $(@el).find(".administration-list")
+      .html _.template $("#administration-list-template").html(), {patient: @model}
+    
+    $(@el).find(".prescriptions-list")
+      .html _.template $("#prescriptions-list-template").html(), {patient: @model}
 
-  rerender: ->
-    for doseRowView in @doseRowViews
-      if doseRowView.model not in @model.doses()
-        doseRowView.remove()
-      else
-        doseRowView.render()
-
-    $(@el).find(".listing").html _.template $("#patient-listing-template").html(), {patient: @model}
-    $(@el).find(".administration-list").html _.template $("#administration-list-template").html(), {patient: @model}
-    $(@el).find(".prescriptions-list").html _.template $("#prescriptions-list-template").html(), {patient: @model}
+    $(@el).find(".prescription .prescriptions tbody tr:not(.new)").remove()
+    $(@el).find(".prescription .prescriptions tbody")
+      .prepend _.template $("#prescriptions-table-template").html(), {patient: @model}
 
     @setNextDose()
     @
@@ -151,13 +154,26 @@ class PatientListItemView extends Backbone.View
 
   removePrescription: (event) ->
     $tr = $(event.target).parents("tr")
-    prescriptionIndex = $tr.index() - 1
+    prescriptionIndex = $tr.index()
+    console.log $tr
     $tr.remove()
     @model.get('prescriptions').splice prescriptionIndex, 1
     @rerender()
 
+  addPrescription: (event) ->
+    $tr = $(event.target).parents("tr")
+    @model.get('prescriptions').push new Prescription
+      medication: $tr.find(".medication-input").val()
+      dosage: $tr.find(".dosage-input").val()
+      interval: moment.duration(parseInt($tr.find(".frequency-input").val(), 10), 'hours')
+      startTime: moment($tr.find(".start-input input").val())
+      endTime: moment($tr.find(".end-input input").val())
+    $tr.remove()
+    @rerender()
+
   events:
     'click .remove-existing': 'removePrescription'
+    'click .add-new': 'addPrescription'
 
 
 class PatientDocumentView extends Backbone.View

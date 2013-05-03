@@ -113,6 +113,22 @@
       <% }) %>
     </script>
 
+    <script type="text/html" id="prescriptions-table-template">
+      <% _.each(patient.get('prescriptions'), function (prescription) { %>
+        <tr>
+          <td><%= prescription.get('medication') %></td>
+          <td><%= prescription.get('dosage') %></td>
+          <td>every <%= prescription.get('interval').asHours() %> hours</td>
+          <td><%= prescription.get('startTime').fromNow() %></td>
+          <td><%= prescription.get('endTime').fromNow() %></td>
+          <td>
+            <!--<a href="#" class="edit not-implemented"></a>-->
+            <a href="#" class="remove remove-existing"></a>
+          </td>
+        </tr>
+      <% }) %>
+    </script>
+
     <script type="text/html" id="list-item-template">
       <div class="listing"></div>
       <div class="medication">
@@ -166,14 +182,13 @@
                   </td>
                   <td>
                     <select class="frequency-input select-input">
-                      <option>Every hour</option>
-                      <option>Every 2 hours</option>
-                      <option>Every 3 hours</option>
-                      <option>Every 4 hours</option>
-                      <option>Every 6 hours</option>
-                      <option>Every 12 hours</option>
-                      <option>Every 24 hours</option>
-                      <option>Other…</option>
+                      <option value="1">Every hour</option>
+                      <option value="2">Every 2 hours</option>
+                      <option value="3">Every 3 hours</option>
+                      <option value="4">Every 4 hours</option>
+                      <option value="6">Every 6 hours</option>
+                      <option value="12">Every 12 hours</option>
+                      <option value="24">Every 24 hours</option>
                     </select>
                   </td>
                   <td>
@@ -205,23 +220,10 @@
                     </div>
                   </td>
                   <td>
-                    <a href="#" class="ok not-implemented"></a>
+                    <a href="#" class="ok add-new"></a>
                     <a href="#" class="remove remove-new"></a>
                   </td>
                 </tr>
-                <% _.each(patient.get('prescriptions'), function (prescription) { %>
-                  <tr>
-                    <td><%= prescription.get('medication') %></td>
-                    <td><%= prescription.get('dosage') %></td>
-                    <td>every <%= prescription.get('interval').asHours() %> hours</td>
-                    <td><%= prescription.get('startTime').fromNow() %></td>
-                    <td><%= prescription.get('endTime').fromNow() %></td>
-                    <td>
-                      <!--<a href="#" class="edit not-implemented"></a>-->
-                      <a href="#" class="remove remove-existing"></a>
-                    </td>
-                  </tr>
-                <% }) %>
               </tbody>
             </table>
             <a href="#" class="add-prescription button">Add prescription</a>
