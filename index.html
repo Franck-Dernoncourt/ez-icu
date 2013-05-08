@@ -29,7 +29,13 @@
     <header>
       <h1 id="logo">EZ-ICU</h1>
       <span class="subtitle">Medication management made easy.</span>
-      <span id="account">You are currently logged in as <span class="name">Dr. Strangelove</span></span>
+      <div class="user-name-header">
+      <script type="text/html" id="user-name-header-template">
+      <span id="account">You are currently logged in as <span class="name">
+      <%= user.get('title') + ' ' + user.get('name') %>
+      </span></span>
+      </script>
+      </div>
     </header>
     <section id="patient-list">
       <div id="list-controls">

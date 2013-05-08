@@ -183,10 +183,18 @@ class PatientListItemView extends Backbone.View
 
 
 class PatientDocumentView extends Backbone.View
+  defaults: 
+    user: currentUser
+
   el: $('#patient-document')
   renderPatient: (patient) ->
     $(@el).html _.template $("#patient-document-template").html(), {patient: patient}
     @
+
+  render: (user)->
+    console.log(user)
+    $(".user-name-header")
+      .html _.template $("#user-name-header-template").html(), {user: user}
 
 
 class DoseRowView extends Backbone.View
@@ -215,6 +223,25 @@ class DoseRowView extends Backbone.View
     'click .done': 'done'
     'click .undo': 'undo'
 
+titles = 
+  doctor: "Dr."
+  nurse: "Nurse"
+
+class User extends Backbone.Model
+  defaults:
+    name: ""
+    title: titles.nurse
+
+strangelove = new User
+  name: "Strangelove"
+  title: titles.doctor
+
+ratched = new User
+  name: "Ratched"
+  title: titles.nurse
+
+allUsers = [strangelove, ratched]
+currentUser = strangelove
 
 # Set up some static test patients:
 kamran = new Patient
@@ -391,15 +418,18 @@ $ ->
   if patientListView.collection.length == 0
     patientListView.collection.create patient for patient in testPatients
 
-  # setInterval ->
-  #   patientListView.rerender()
-  #   _.each patientListView.collection.models, (patient) ->
-  #     patientListView.collection.sync 'update', patient
-  #   console.log '.'
-  # , 2000
+  setInterval ->
+    patientListView.rerender()
+    _.each patientListView.collection.models, (patient) ->
+      patientListView.collection.sync 'update', patient
+    console.log '.'
+  , 2000
   sortByName()
 
   patientDocumentView = new PatientDocumentView
+  console.log(currentUser)
+  patientDocumentView.render(currentUser)
+
   
   # Add sort handlers:
   $("#sort-by-name").click (event) ->
