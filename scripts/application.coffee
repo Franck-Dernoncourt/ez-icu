@@ -516,6 +516,8 @@ $ ->
       hourGrid: 4
       minuteGrid: 10
     $newRow.find(".date-time-picker-input").datetimepicker 'setDate', new Date
+    $newRow.find(".medication-input").autocomplete
+      source: medications
     $newRow.appendTo($table.find "tbody").hide().slideDown 200
 
   # Tab handling:

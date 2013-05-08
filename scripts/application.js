@@ -705,6 +705,9 @@
         minuteGrid: 10
       });
       $newRow.find(".date-time-picker-input").datetimepicker('setDate', new Date);
+      $newRow.find(".medication-input").autocomplete({
+        source: medications
+      });
       return $newRow.appendTo($table.find("tbody")).hide().slideDown(200);
     });
     $(document).on("click", ".medication-tabs a", {}, function(event) {
