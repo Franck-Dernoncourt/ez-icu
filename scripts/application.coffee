@@ -252,6 +252,8 @@ class DoseRowView extends Backbone.View
     'click .undo': 'undo'
 
 
+medications = ["Abilify", "Accutane", "Actonel", "Adderall", "Adipex", "Advair", "Allegra", "Ambien", "Amitiza", "Arava", "Aricept", "Aspirin", "Avodart", "Boniva", "Botox", "Byetta", "Carvedilol", "Celebrex", "Celexa", "Chantix", "Cialis", "Cimzia", "Ciprofloxacin", "Claritin", "Clomid", "Coumadin", "Crestor", "Cyclobenzaprine", "Cymbalta", "Dexamethasone", "Dilaudid", "Diovan", "Diphenhydramine", "Dopamine", "Effexor", "Enbrel", "Ephedrine", "Femara", "Fish Oil", "Flomax", "Folic Acid", "Fosamax", "Gabapentin", "Gardasil", "Geodon", "Humira", "Hydrocodone", "Insulin", "Keppra", "Lamictal", "Lasix", "Levaquin", "Levitra", "Lexapro", "Lipitor", "Lisinopril", "Lithium", "Loratadine", "Losartan", "Lotrel", "Losartan", "Lunesta", "Lyrica", "Melatonin", "Meloxicam", "Metformin", "Methadone", "Methotrexate", "Mirapex", "Mirena", "Mirtazapine", "Namenda", "Naproxen", "Nasonex", "Neurontin", "Nexium", "Nizoral", "Norco", "Norvasc", "Omeprazole", "Orencia", "Oxycodone", "Oxycontin", "Pantoprazole", "Paxil", "Paracetamol", "Percocet", "Phentermine", "Plan B", "Plavix", "Pravastatin", "Prednisone", "Prevacid", "Prilosec", "Promethazine", "Propecia", "Protonix", "Provigil", "Prozac", "Pulmicort", "Remicade", "Rituxan", "Senna", "Seroquel", "Sertraline", "Simvastatin", "Singulair", "Soma", "Spiriva", "Suboxone", "Synvisc", "Tamiflu", "Tamoxifen", "Tamsulosin", "Taxol", "Testosterone", "Thyroid", "Topamax", "Tramadol", "Trazodone", "Tylenol", "Ultram", "Valtrex", "Viagra", "Vicodin", "Vimovo", "Voltaren", "Vytorin", "Wellbutrin", "Xanax", "Xenical", "Zetia", "Zocor", "Zoloft", "Zyprexa", "Zyrtec"]
+
 # Set up some static test patients:
 kamran = new Patient
   name: "Kamran Khan"
@@ -524,7 +526,6 @@ $ ->
       .find(".medication-content > div")
       .slideUp 100, ->
         $(this).filter(".#{tabName}").slideDown 100
-
 
   # Patient handling:
   $(document).on "click", ".listing", {}, (event) ->
