@@ -128,7 +128,7 @@ ul.icons {
 
 .icon-border {
   border: solid 1px #eeeeee;
-  padding: 0.2em 0.25em 0.15em;
+  padding: .2em .25em .15em;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
@@ -1419,6 +1419,11 @@ section#patient-list {
                 border-bottom: 1px solid #8b94a1;
                 border-top: 1px solid #c3c8cf;
                 line-height: 1; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td .undo {
+                  display: none;
+                  color: rgba(51, 51, 51, 0.5); }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td .undo a {
+                    color: rgba(51, 51, 51, 0.7); }
                 section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td:last-child {
                   text-align: right; }
                 section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td em {
@@ -1448,6 +1453,17 @@ section#patient-list {
                     content: "\f00c"; }
                   section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a.remove-existing::after, section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td a.remove::after {
                     content: "\f00d"; }
+              section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.done {
+                color: rgba(51, 51, 51, 0.5); }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.done .undo {
+                  display: inline-block;
+                  font-style: italic; }
+                  section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.done .undo a {
+                    margin-left: 5px;
+                    font-style: normal;
+                    text-decoration: underline; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.done .remove {
+                  display: none; }
               section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr:last-child td {
                 border-bottom: none; }
               section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions tr.new-template {
@@ -1771,12 +1787,12 @@ body.patient-selected section#information {
 
 .ui-datepicker {
   width: 17em;
-  padding: 0.2em 0.2em 0;
+  padding: .2em .2em 0;
   display: none; }
 
 .ui-datepicker .ui-datepicker-header {
   position: relative;
-  padding: 0.2em 0; }
+  padding: .2em 0; }
 
 .ui-datepicker .ui-datepicker-prev,
 .ui-datepicker .ui-datepicker-next {
@@ -1826,10 +1842,10 @@ body.patient-selected section#information {
   width: 100%;
   font-size: .9em;
   border-collapse: collapse;
-  margin: 0 0 0.4em; }
+  margin: 0 0 .4em; }
 
 .ui-datepicker th {
-  padding: 0.7em 0.3em;
+  padding: .7em .3em;
   text-align: center;
   font-weight: bold;
   border: 0; }
@@ -1847,17 +1863,17 @@ body.patient-selected section#information {
 
 .ui-datepicker .ui-datepicker-buttonpane {
   background-image: none;
-  margin: 0.7em 0 0 0;
-  padding: 0 0.2em;
+  margin: .7em 0 0 0;
+  padding: 0 .2em;
   border-left: 0;
   border-right: 0;
   border-bottom: 0; }
 
 .ui-datepicker .ui-datepicker-buttonpane button {
   float: right;
-  margin: 0.5em 0.2em 0.4em;
+  margin: .5em .2em .4em;
   cursor: pointer;
-  padding: 0.2em 0.6em 0.3em 0.6em;
+  padding: .2em .6em .3em .6em;
   width: auto;
   overflow: visible; }
 
@@ -1873,7 +1889,7 @@ body.patient-selected section#information {
 
 .ui-datepicker-multi .ui-datepicker-group table {
   width: 95%;
-  margin: 0 auto 0.4em; }
+  margin: 0 auto .4em; }
 
 .ui-datepicker-multi-2 .ui-datepicker-group {
   width: 50%; }

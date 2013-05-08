@@ -465,6 +465,13 @@ section#patient-list {
                 border-bottom: 1px solid darken($medication-background, 10%);
                 border-top: 1px solid lighten($medication-background, 10%);
                 line-height: 1;
+                .undo {
+                  display: none;
+                  color: rgba($medication-foreground, 0.5);
+                  a {
+                    color: rgba($medication-foreground, 0.7);
+                  }
+                }
                 &:last-child {
                   text-align: right;
                 }
@@ -508,6 +515,21 @@ section#patient-list {
                 }
               }
               tr {
+                &.done {
+                  color: rgba($medication-foreground, 0.5);
+                  .undo {
+                    display: inline-block;
+                    font-style: italic;
+                    a {
+                      margin-left: 5px;
+                      font-style: normal;
+                      text-decoration: underline;
+                    }
+                  }
+                  .remove {
+                    display: none;
+                  }
+                }
                 &:last-child {
                   td {
                     border-bottom: none;

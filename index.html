@@ -117,7 +117,8 @@
     </script>
 
     <script type="text/html" id="prescriptions-list-template">
-      <% _.each(patient.get('prescriptions'), function (prescription) { %>
+      <% _.each(_.filter(patient.get('prescriptions'), function (prescription) {return prescription.get('deleteTime') === null;}), 
+                function (prescription) { %>
         <li>
           <h4><%= prescription.get('medication') %> <em><%= prescription.get('dosage') %></em></h4>
           <span class="additional">every <%= prescription.get('interval').asHours() %> hours</span>
@@ -127,15 +128,18 @@
 
     <script type="text/html" id="prescriptions-table-template">
       <% _.each(patient.get('prescriptions'), function (prescription) { %>
-        <tr>
+        <tr <% if (prescription.get('deleteTime') !== null) print('class="done"') %> >
           <td><%= prescription.get('medication') %></td>
           <td><%= prescription.get('dosage') %></td>
           <td>every <%= prescription.get('interval').asHours() %> hours</td>
           <td><%= prescription.get('startTime').fromNow() %></td>
           <td><%= prescription.get('endTime').fromNow() %></td>
+          <td><% if (prescription.get('deleteTime') !== null) print('Deleted ' + prescription.get('deleteTime').fromNow()); %></td>
           <td>
-            <!--<a href="#" class="edit not-implemented"></a>-->
-            <a href="#" class="remove remove-existing"></a>
+              <a href="#" class="remove remove-existing"></a>
+            <span class="undo">
+              <a href="#" class="undo-link">Undo</a>
+            </span>
           </td>
         </tr>
       <% }) %>
@@ -181,6 +185,7 @@
                   <th>Frequency</th>
                   <th>Start</th>
                   <th>End</th>
+                  <th></th>
                   <th></th>
                 </tr>
               </thead>

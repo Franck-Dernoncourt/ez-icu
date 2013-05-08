@@ -5,6 +5,7 @@ class Prescription extends Backbone.Model
     interval: null
     startTime: moment()
     endTime: moment()
+    deleteTime: null
 
   initialize: ->
     @set 'doses', []
@@ -50,7 +51,7 @@ class Patient extends Backbone.Model
     @get('name').split(" ")[1]
 
   doses: ->
-    doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions']
+    doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions' when prescription.get('deleteTime') is null]
     _.sortBy doses, (dose) -> dose.get 'scheduledTime'
 
   mostRecentDoseGiven: ->
@@ -155,9 +156,16 @@ class PatientListItemView extends Backbone.View
   removePrescription: (event) ->
     $tr = $(event.target).parents("tr")
     prescriptionIndex = $tr.index()
-    console.log $tr
-    $tr.remove()
-    @model.get('prescriptions').splice prescriptionIndex, 1
+    # console.log $tr
+    # $tr.remove()
+    @model.get('prescriptions')[prescriptionIndex].set({'deleteTime': moment()})
+    # @model.get('prescriptions').splice prescriptionIndex, 1
+    @rerender()
+
+  undoRemove: (event) ->
+    $tr = $(event.target).parents("tr")
+    prescriptionIndex = $tr.index()
+    @model.get('prescriptions')[prescriptionIndex].set({'deleteTime': null})
     @rerender()
 
   addPrescription: (event) ->
@@ -174,6 +182,7 @@ class PatientListItemView extends Backbone.View
   events:
     'click .remove-existing': 'removePrescription'
     'click .add-new': 'addPrescription'
+    'click .undo-link': 'undoRemove'
 
 
 class PatientDocumentView extends Backbone.View
@@ -385,12 +394,12 @@ $ ->
   if patientListView.collection.length == 0
     patientListView.collection.create patient for patient in testPatients
 
-  setInterval ->
-    patientListView.rerender()
-    _.each patientListView.collection.models, (patient) ->
-      patientListView.collection.sync 'update', patient
-    console.log '.'
-  , 2000
+  # setInterval ->
+  #   patientListView.rerender()
+  #   _.each patientListView.collection.models, (patient) ->
+  #     patientListView.collection.sync 'update', patient
+  #   console.log '.'
+  # , 2000
   sortByName()
 
   patientDocumentView = new PatientDocumentView
