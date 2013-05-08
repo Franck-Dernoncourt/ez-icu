@@ -156,10 +156,7 @@ class PatientListItemView extends Backbone.View
   removePrescription: (event) ->
     $tr = $(event.target).parents("tr")
     prescriptionIndex = $tr.index()
-    # console.log $tr
-    # $tr.remove()
     @model.get('prescriptions')[prescriptionIndex].set({'deleteTime': moment()})
-    # @model.get('prescriptions').splice prescriptionIndex, 1
     @rerender()
 
   undoRemove: (event) ->
