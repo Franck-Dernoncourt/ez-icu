@@ -122,7 +122,28 @@ header {
     font-size: 0.8em;
     text-shadow: 0 1px darken($header-bar-foreground, 50%);
   }
-  #account {
+  .account-inactive{
+    display: block;
+    float: right;
+    /*text-shadow: 0 1px darken($header-bar-foreground, 50%);*/
+    .name {
+      /*font-weight: 700;*/
+      text-decoration: underline;
+      /*background: rgba(#000, 0.1);*/
+      display: inline-block;
+      vertical-align: baseline;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
+      /*@include border-radius(30px);*/
+/*      &::before {
+        content: "\f0f1";
+        font-family: "FontAwesome";
+        margin-right: 5px;
+      }
+*/    }
+  }
+  .account-active {
     display: block;
     float: right;
     text-shadow: 0 1px darken($header-bar-foreground, 50%);

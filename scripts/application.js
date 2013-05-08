@@ -372,7 +372,8 @@
     PatientDocumentView.prototype.render = function(user) {
       console.log(user);
       return $(".user-name-header").html(_.template($("#user-name-header-template").html(), {
-        user: user
+        activeUser: user,
+        allUsers: allUsers
       }));
     };
 

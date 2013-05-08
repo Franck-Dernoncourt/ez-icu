@@ -194,7 +194,7 @@ class PatientDocumentView extends Backbone.View
   render: (user)->
     console.log(user)
     $(".user-name-header")
-      .html _.template $("#user-name-header-template").html(), {user: user}
+      .html _.template $("#user-name-header-template").html(), {activeUser: user, allUsers: allUsers}
 
 
 class DoseRowView extends Backbone.View

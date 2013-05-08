@@ -31,8 +31,14 @@
       <span class="subtitle">Medication management made easy.</span>
       <div class="user-name-header">
       <script type="text/html" id="user-name-header-template">
-      <span id="account">You are currently logged in as <span class="name">
-      <%= user.get('title') + ' ' + user.get('name') %>
+      <% _.each(_.filter(allUsers, function(user) {return user !== activeUser;}),
+        function (user) { %>
+          <span class="account-inactive"> <span class="name">
+          <%= user.get('title') + ' ' + user.get('name') %>
+          </span></span>
+      <% }); %>
+      <span class="account-active">You are currently logged in as <span class="name">
+      <%= activeUser.get('title') + ' ' + activeUser.get('name') %>
       </span></span>
       </script>
       </div>
