@@ -137,7 +137,7 @@
     };
 
     Patient.prototype.doses = function() {
-      var doses, prescription;
+      var dose, doses, prescription;
 
       doses = _.flatten([
         (function() {
@@ -147,9 +147,21 @@
           _results = [];
           for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
             prescription = _ref4[_i];
-            if (prescription.get('deleteTime') === null) {
-              _results.push(prescription.get('doses'));
-            }
+            _results.push([
+              (function() {
+                var _j, _len1, _ref5, _results1;
+
+                _ref5 = prescription.get('doses');
+                _results1 = [];
+                for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+                  dose = _ref5[_j];
+                  if ((dose.get('givenTime') !== null) || (prescription.get('deleteTime') === null)) {
+                    _results1.push(dose);
+                  }
+                }
+                return _results1;
+              })()
+            ]);
           }
           return _results;
         }).call(this)
@@ -298,6 +310,7 @@
       $(this.el).html(_.template($("#list-item-template").html(), {
         patient: this.model
       }));
+      this.user = user;
       this.rerender(user);
       return this;
     };
@@ -352,7 +365,7 @@
       this.model.get('prescriptions')[prescriptionIndex].set({
         'deleteTime': moment()
       });
-      return this.rerender();
+      return this.rerender(this.user);
     };
 
     PatientListItemView.prototype.undoRemove = function(event) {
@@ -363,7 +376,7 @@
       this.model.get('prescriptions')[prescriptionIndex].set({
         'deleteTime': null
       });
-      return this.rerender();
+      return this.rerender(this.user);
     };
 
     PatientListItemView.prototype.addPrescription = function(event) {
@@ -378,7 +391,7 @@
         endTime: moment($tr.find(".end-input input").val())
       }));
       $tr.remove();
-      return this.rerender();
+      return this.rerender(this.user);
     };
 
     PatientListItemView.prototype.events = {

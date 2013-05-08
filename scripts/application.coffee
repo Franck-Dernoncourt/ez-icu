@@ -74,7 +74,8 @@ class Patient extends Backbone.Model
     @get('name').split(" ")[1]
 
   doses: ->
-    doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions' when prescription.get('deleteTime') is null]
+    # doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions' when prescription.get('deleteTime') is null]
+    doses = _.flatten [[dose for dose in prescription.get('doses') when ((dose.get('givenTime') isnt null) or (prescription.get('deleteTime') is null))] for prescription in @get 'prescriptions']
     _.sortBy doses, (dose) -> dose.get 'scheduledTime'
 
   mostRecentDoseGiven: ->
@@ -144,6 +145,7 @@ class PatientListItemView extends Backbone.View
 
   render: (user) ->
     $(@el).html _.template $("#list-item-template").html(), {patient: @model}
+    @user = user
     @rerender(user)
     @
 
@@ -184,13 +186,13 @@ class PatientListItemView extends Backbone.View
     $tr = $(event.target).parents("tr")
     prescriptionIndex = $tr.index()
     @model.get('prescriptions')[prescriptionIndex].set({'deleteTime': moment()})
-    @rerender()
+    @rerender(@user)
 
   undoRemove: (event) ->
     $tr = $(event.target).parents("tr")
     prescriptionIndex = $tr.index()
     @model.get('prescriptions')[prescriptionIndex].set({'deleteTime': null})
-    @rerender()
+    @rerender(@user)
 
   addPrescription: (event) ->
     $tr = $(event.target).parents("tr")
@@ -201,7 +203,7 @@ class PatientListItemView extends Backbone.View
       startTime: moment($tr.find(".start-input input").val())
       endTime: moment($tr.find(".end-input input").val())
     $tr.remove()
-    @rerender()
+    @rerender(@user)
 
   events:
     'click .remove-existing': 'removePrescription'
