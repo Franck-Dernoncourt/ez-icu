@@ -138,7 +138,13 @@
     <script type="text/html" id="prescriptions-table-template">
       <% _.each(patient.get('prescriptions'), function (prescription) { %>
         <tr <% if (prescription.get('deleteTime') !== null) print('class="done"') %> >
-          <td><%= prescription.get('medication') %></td>
+          <td><%= prescription.get('medication') %>
+          <% if (prescription.get('allergyWarning')) { %>
+            <span class="allergy-warning">(allergy)<span>
+          <% } else if (prescription.get('allergyAlert')) { %>
+            <span class="allergy-alert">(allergy)<span>
+          <% } %>
+          </td>
           <td><%= prescription.get('dosage') %></td>
           <td>every <%= prescription.get('interval').asHours() %> hours</td>
           <td><%= prescription.get('startTime').fromNow() %></td>
@@ -262,7 +268,13 @@
     </script>
 
     <script type="text/html" id="dose-row-template">
-      <td><%= dose.get('prescription').get('medication') %></td>
+      <td><%= dose.get('prescription').get('medication') %>
+      <% if (dose.get('prescription').get('allergyWarning')) { %>
+        <span class="allergy-warning">(allergy)<span>
+      <% } else if (dose.get('prescription').get('allergyAlert')) {%>
+        <span class="allergy-alert">(allergy)<span>
+      <% } %>
+      </td>
       <td><%= dose.get('prescription').get('dosage') %></td>
       <td><%= dose.get('scheduledTime').fromNow() %></td>
       <td>
@@ -295,7 +307,7 @@
             <li class="unimportant">No known allergies to medication</li>
           <% } %>
           <% _.each(patient.get('allergies'), function (allergy) { %>
-            <li>Patient allergic to <%= allergy %></li>
+            <li>Patient mildly allergic to <%= allergy %></li>
           <% }) %>
         </ul>
       </section>

@@ -57,7 +57,9 @@
       interval: null,
       startTime: moment(),
       endTime: moment(),
-      deleteTime: null
+      deleteTime: null,
+      allergyAlert: false,
+      allergyWarning: false
     };
 
     Prescription.prototype.initialize = function() {
@@ -70,7 +72,9 @@
         this.get('doses').push(new Dose({
           prescription: this,
           scheduledTime: time.clone(),
-          givenTime: null
+          givenTime: null,
+          allergyAlert: this.allergyAlert,
+          allergyWarning: this.allergyWarning
         }));
         _results.push(time.add(this.get('interval')));
       }
@@ -92,7 +96,9 @@
     Dose.prototype.defaults = {
       prescription: null,
       scheduledTime: null,
-      givenTime: null
+      givenTime: null,
+      allergyAlert: false,
+      allergyWarning: false
     };
 
     Dose.prototype.given = function() {
@@ -388,7 +394,13 @@
         dosage: $tr.find(".dosage-input").val(),
         interval: moment.duration(parseInt($tr.find(".frequency-input").val(), 10), 'hours'),
         startTime: moment($tr.find(".start-input input").val()),
-        endTime: moment($tr.find(".end-input input").val())
+        endTime: moment($tr.find(".end-input input").val()),
+        allergyAlert: _.contains(_.map(this.model.get('importantAllergies'), function(x) {
+          return x.toLowerCase();
+        }), $tr.find(".medication-input").val().toLowerCase()),
+        allergyWarning: _.contains(_.map(this.model.get('allergies'), function(x) {
+          return x.toLowerCase();
+        }), $tr.find(".medication-input").val().toLowerCase())
       }));
       $tr.remove();
       return this.rerender(this.user);
@@ -513,7 +525,7 @@
     ethnicity: "White",
     address: "1 Main St.,<br />Cambridge, MA. 02142",
     importantAllergies: ["penicillin"],
-    allergies: [],
+    allergies: ["aspirin"],
     otherMedications: ["<em>Patient not on any other medications</em>"],
     visitInformation: ["Admitted with head trauma <em>1 day ago</em>", "In ICU after suspected cerebral hemorrhage <em>3 hours ago</em>"],
     history: ["Family history of hypertension"],
@@ -561,7 +573,7 @@
     ethnicity: "White",
     address: "120 Mass Ave.,<br />Cambridge, MA. 02139",
     importantAllergies: ["aspirin", "naproxen"],
-    allergies: ["peanuts (mild)"],
+    allergies: ["peanuts"],
     otherMedications: ["Daily Fenofibrate <em>45mg/day</em>", "Twice-daily Lovenox <em>20mg/day, 10mg q12h</em>"],
     visitInformation: ["Admitted with difficulty breathing <em>2 days ago</em>"],
     history: ["Family history of hyperglycemia"],
@@ -577,7 +589,8 @@
         dosage: "30mg",
         interval: moment.duration(24, 'hours'),
         startTime: moment().subtract(9, 'hours'),
-        endTime: moment().add(6, 'days').subtract(9, 'hours')
+        endTime: moment().add(6, 'days').subtract(9, 'hours'),
+        allergyAlert: true
       })
     ],
     bed: 9,

@@ -1461,6 +1461,10 @@ section#patient-list {
                 border-bottom: 1px solid #8b94a1;
                 border-top: 1px solid #c3c8cf;
                 line-height: 1; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td span.allergy-alert {
+                  color: #8a2a2a; }
+                section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td span.allergy-warning {
+                  color: #333333; }
                 section#patient-list #patients > li .medication .medication-content .prescription table.prescriptions td .undo {
                   display: none;
                   color: rgba(51, 51, 51, 0.5); }
@@ -1575,6 +1579,10 @@ section#patient-list {
               padding: 7px 0;
               border-bottom: 1px solid #8b94a1;
               border-top: 1px solid #c3c8cf; }
+              section#patient-list #patients > li .medication .medication-content .administration table.doses td span.allergy-alert {
+                color: #8a2a2a; }
+              section#patient-list #patients > li .medication .medication-content .administration table.doses td span.allergy-warning {
+                color: #333333; }
               section#patient-list #patients > li .medication .medication-content .administration table.doses td .undo {
                 display: none;
                 color: rgba(51, 51, 51, 0.5); }

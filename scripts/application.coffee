@@ -29,6 +29,8 @@ class Prescription extends Backbone.Model
     startTime: moment()
     endTime: moment()
     deleteTime: null
+    allergyAlert: false
+    allergyWarning: false
 
   initialize: ->
     @set 'doses', []
@@ -46,6 +48,8 @@ class Dose extends Backbone.Model
     prescription: null
     scheduledTime: null
     givenTime: null
+    allergyAlert: false
+    allergyWarning: false
   given: ->
     @get('givenTime') != null
 
@@ -74,7 +78,6 @@ class Patient extends Backbone.Model
     @get('name').split(" ")[1]
 
   doses: ->
-    # doses = _.flatten [prescription.get 'doses' for prescription in @get 'prescriptions' when prescription.get('deleteTime') is null]
     doses = _.flatten [[dose for dose in prescription.get('doses') when ((dose.get('givenTime') isnt null) or (prescription.get('deleteTime') is null))] for prescription in @get 'prescriptions']
     _.sortBy doses, (dose) -> dose.get 'scheduledTime'
 
@@ -202,6 +205,8 @@ class PatientListItemView extends Backbone.View
       interval: moment.duration(parseInt($tr.find(".frequency-input").val(), 10), 'hours')
       startTime: moment($tr.find(".start-input input").val())
       endTime: moment($tr.find(".end-input input").val())
+      allergyAlert: _.contains(_.map(@model.get('importantAllergies'), (x) -> x.toLowerCase()), $tr.find(".medication-input").val().toLowerCase())
+      allergyWarning: _.contains(_.map(@model.get('allergies'), (x) -> x.toLowerCase()), $tr.find(".medication-input").val().toLowerCase())
     $tr.remove()
     @rerender(@user)
 
@@ -295,7 +300,7 @@ robin = new Patient
   ethnicity: "White"
   address: "1 Main St.,<br />Cambridge, MA. 02142"
   importantAllergies: ["penicillin"]
-  allergies: []
+  allergies: ["aspirin"]
   otherMedications: [
     "<em>Patient not on any other medications</em>"
   ]
@@ -354,7 +359,7 @@ franck = new Patient
   ethnicity: "White"
   address: "120 Mass Ave.,<br />Cambridge, MA. 02139"
   importantAllergies: ["aspirin", "naproxen"]
-  allergies: ["peanuts (mild)"]
+  allergies: ["peanuts"]
   otherMedications: [
     "Daily Fenofibrate <em>45mg/day</em>",
     "Twice-daily Lovenox <em>20mg/day, 10mg q12h</em>"
@@ -378,6 +383,7 @@ franck = new Patient
       interval: moment.duration(24, 'hours')
       startTime: moment().subtract(9, 'hours')
       endTime: moment().add(6, 'days').subtract(9, 'hours')
+      allergyAlert: true
   ]
   bed: 9
   portraitFilename: "franck.jpg"
