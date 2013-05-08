@@ -620,6 +620,10 @@ section#patient-list {
                         border: none;
                       }
                     }
+                    &.start-input,
+                    &.end-input {
+                      z-index: 1000;
+                    }
                     &.dosage-input input { width: 60%; }
                     .date-time-picker {
                       position: absolute;
@@ -906,7 +910,6 @@ body.patient-selected {
   }
 }
 
-
 /* Layout helpers
 ----------------------------------*/
 .ui-helper-hidden {
@@ -988,6 +991,12 @@ body.patient-selected {
   left: 0;
   width: 100%;
   height: 100%;
+}
+.ui-autocomplete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: default;
 }
 .ui-datepicker {
   width: 17em;
@@ -1153,6 +1162,75 @@ body.patient-selected {
   border-right-width: 0;
   border-left-width: 1px;
 }
+.ui-menu {
+  list-style: none;
+  padding: 2px;
+  margin: 0;
+  display: block;
+  outline: none;
+}
+.ui-menu .ui-menu {
+  margin-top: -3px;
+  position: absolute;
+}
+.ui-menu .ui-menu-item {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /* support: IE10, see #8844 */
+  list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
+}
+.ui-menu .ui-menu-divider {
+  margin: 5px -2px 5px -2px;
+  height: 0;
+  font-size: 0;
+  line-height: 0;
+  border-width: 1px 0 0 0;
+}
+.ui-menu .ui-menu-item a {
+  text-decoration: none;
+  display: block;
+  padding: 2px .4em;
+  line-height: 1.5;
+  min-height: 0; /* support: IE7 */
+  font-weight: normal;
+}
+.ui-menu .ui-menu-item a.ui-state-focus,
+.ui-menu .ui-menu-item a.ui-state-active {
+  font-weight: normal;
+  background: rgba(#000, 0.1);
+}
+
+.ui-menu .ui-state-disabled {
+  font-weight: normal;
+  margin: .4em 0 .2em;
+  line-height: 1.5;
+}
+.ui-menu .ui-state-disabled a {
+  cursor: default;
+}
+
+/* icon support */
+.ui-menu-icons {
+  position: relative;
+}
+.ui-menu-icons .ui-menu-item a {
+  position: relative;
+  padding-left: 2em;
+}
+
+/* left-aligned */
+.ui-menu .ui-icon {
+  position: absolute;
+  top: .2em;
+  left: .2em;
+}
+
+/* right-aligned */
+.ui-menu .ui-menu-icon {
+  position: static;
+  float: right;
+}
 .ui-slider {
   position: relative;
   text-align: left;
@@ -1217,6 +1295,7 @@ body.patient-selected {
   top: 0;
 }
 
+
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
 .ui-timepicker-div dl { text-align: left; }
 .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
@@ -1267,5 +1346,12 @@ body.patient-selected {
     color: lighten($accent-color, 90%);
     @include border-radius(4px);
     box-shadow: inset 0 1px 0 lighten($accent-color, 20%), 0 2px 1px rgba(#000, 0.3);
+  }
+}
+
+.ui-autocomplete {
+  background: white;
+  li {
+    cursor: pointer;
   }
 }
