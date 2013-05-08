@@ -101,7 +101,7 @@
         <% dose = patient.mostRecentDoseGiven() %>
         <li <% if (dose.get('givenTime') !== null) print('class="done"') %>>
           <h4><%= dose.get('prescription').get('medication') %></h4>
-          <span class="additional"><%= dose.get('prescription').get('dosage') %>, given <%= dose.get('scheduledTime').fromNow() %></span>
+          <span class="additional"><%= dose.get('prescription').get('dosage') %>, given <%= dose.get('givenTime').fromNow() %></span>
         </li>
       <% } %>
 
