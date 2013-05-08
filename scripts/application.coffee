@@ -1,3 +1,26 @@
+titles = 
+  doctor: "Dr."
+  nurse: "Nurse"
+
+class User extends Backbone.Model
+  defaults:
+    name: ""
+    title: titles.nurse
+    user_id: null
+
+strangelove = new User
+  name: "Strangelove"
+  title: titles.doctor
+  user_id: 0
+
+ratched = new User
+  name: "Ratched"
+  title: titles.nurse
+  user_id: 1
+
+allUsers = [strangelove, ratched]
+currentUser = strangelove
+
 class Prescription extends Backbone.Model
   defaults:
     medication: ""
@@ -98,9 +121,10 @@ class PatientListView extends Backbone.View
     @collection.bind 'add', @appendPatient
     @patientListItemViews = []
 
-  rerender: ->
+  rerender: (user) ->
+    # console.log('rerendering with user: ', user.attributes.name)
     for patientListItemView in @patientListItemViews
-      patientListItemView.rerender()
+      patientListItemView.rerender(user)
     @
 
   appendPatient: (patient) ->
@@ -108,7 +132,7 @@ class PatientListView extends Backbone.View
       model: patient
 
     @patientListItemViews.push patientListItemView
-    $(@el).append patientListItemView.render().el
+    $(@el).append patientListItemView.render(currentUser).el
 
 
 class PatientListItemView extends Backbone.View
@@ -118,18 +142,21 @@ class PatientListItemView extends Backbone.View
     $(@el).data 'patient', @model
     @doseRowViews = []
 
-  render: ->
+  render: (user) ->
     $(@el).html _.template $("#list-item-template").html(), {patient: @model}
-    @rerender()
+    @rerender(user)
     @
 
-  rerender: ->
+  rerender: (user) ->
     $(@el).find('.doses tbody').empty()
     for dose in @model.doses()
       doseRowView = new DoseRowView
         model: dose
       @doseRowViews.push doseRowView
       $(@el).find('.doses tbody').append doseRowView.render().el
+
+    $(@el).find(".add-prescription-button")
+      .html _.template $("#add-prescription-button-template").html(), { isDoctor: user.attributes.title == titles.doctor}
 
     $(@el).find(".listing")
       .html _.template $("#patient-listing-template").html(), {patient: @model}
@@ -142,7 +169,7 @@ class PatientListItemView extends Backbone.View
 
     $(@el).find(".prescription .prescriptions tbody tr:not(.new)").remove()
     $(@el).find(".prescription .prescriptions tbody")
-      .prepend _.template $("#prescriptions-table-template").html(), {patient: @model}
+      .prepend _.template $("#prescriptions-table-template").html(), {patient: @model, isDoctor: user.attributes.title == titles.doctor}
 
     @setNextDose()
     @
@@ -183,18 +210,19 @@ class PatientListItemView extends Backbone.View
 
 
 class PatientDocumentView extends Backbone.View
-  defaults: 
-    user: currentUser
 
   el: $('#patient-document')
   renderPatient: (patient) ->
     $(@el).html _.template $("#patient-document-template").html(), {patient: patient}
     @
 
-  render: (user)->
+  render: (user, allUsers)->
+    console.log('rendering doc view:')
     console.log(user)
-    $(".user-name-header")
+    # console.log('all: ' + allUsers)
+    $("#user-name-header")
       .html _.template $("#user-name-header-template").html(), {activeUser: user, allUsers: allUsers}
+    @
 
 
 class DoseRowView extends Backbone.View
@@ -223,25 +251,6 @@ class DoseRowView extends Backbone.View
     'click .done': 'done'
     'click .undo': 'undo'
 
-titles = 
-  doctor: "Dr."
-  nurse: "Nurse"
-
-class User extends Backbone.Model
-  defaults:
-    name: ""
-    title: titles.nurse
-
-strangelove = new User
-  name: "Strangelove"
-  title: titles.doctor
-
-ratched = new User
-  name: "Ratched"
-  title: titles.nurse
-
-allUsers = [strangelove, ratched]
-currentUser = strangelove
 
 # Set up some static test patients:
 kamran = new Patient
@@ -414,12 +423,14 @@ sortByUrgency = ->
 $ ->
   # Backbone View setup:
   patientListView = new PatientListView
+  console.log(currentUser)
+  # patientListView.setUser(currentUser)
   #patientListView.collection.fetch()
   if patientListView.collection.length == 0
     patientListView.collection.create patient for patient in testPatients
 
   setInterval ->
-    patientListView.rerender()
+    patientListView.rerender(currentUser)
     _.each patientListView.collection.models, (patient) ->
       patientListView.collection.sync 'update', patient
     console.log '.'
@@ -427,8 +438,7 @@ $ ->
   sortByName()
 
   patientDocumentView = new PatientDocumentView
-  console.log(currentUser)
-  patientDocumentView.render(currentUser)
+  patientDocumentView.render(currentUser, allUsers)
 
   
   # Add sort handlers:
@@ -458,6 +468,21 @@ $ ->
     $("#sort-by-name").removeClass "active"
     $(this).addClass "active"
     sortByUrgency()
+
+  # User account handling:
+  $(".account").click (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+    return if $(this).hasClass "active"
+    $(".account").removeClass "active"
+    $(this).addClass "active"
+    # patientDocumentView.render(allUsers[$(this).attr('user_id')], allUsers)
+    # patientListView.user = allUsers[$(this).attr('user_id')]
+    currentUser = allUsers[$(this).attr('user_id')]
+    # console.log('user id: ' + $(this).attr('user_id'))
+    # console.log('current user now:')
+    # console.log(currentUser)
+    patientListView.rerender(currentUser)
 
   # Not implemented notice:
   $(document).on "click", ".not-implemented", {}, (event) ->
@@ -499,6 +524,7 @@ $ ->
       .find(".medication-content > div")
       .slideUp 100, ->
         $(this).filter(".#{tabName}").slideDown 100
+
 
   # Patient handling:
   $(document).on "click", ".listing", {}, (event) ->

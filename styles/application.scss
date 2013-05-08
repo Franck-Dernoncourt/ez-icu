@@ -122,6 +122,31 @@ header {
     font-size: 0.8em;
     text-shadow: 0 1px darken($header-bar-foreground, 50%);
   }
+  span {
+    display: block;
+    float: right;
+    a {
+      color: $patient-list-foreground;
+      text-decoration: underline;
+      display: inline-block;
+      vertical-align: baseline;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
+      &.active {
+        text-decoration: none;
+        font-weight: 700;
+        background: rgba(#000, 0.1);
+        @include border-radius(30px);
+        &::before {
+          content: "\f0f1";
+          font-family: "FontAwesome";
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
   .account-inactive{
     display: block;
     float: right;

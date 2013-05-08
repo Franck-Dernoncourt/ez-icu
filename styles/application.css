@@ -1116,6 +1116,28 @@ header {
     margin-left: 10px;
     font-size: 0.8em;
     text-shadow: 0 1px #2c2e32; }
+  header span {
+    display: block;
+    float: right; }
+    header span a {
+      color: #848b94;
+      text-decoration: underline;
+      display: inline-block;
+      vertical-align: baseline;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px; }
+      header span a.active {
+        text-decoration: none;
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.1);
+        -webkit-border-radius: 30px;
+        -moz-border-radius: 30px;
+        border-radius: 30px; }
+        header span a.active::before {
+          content: "\f0f1";
+          font-family: "FontAwesome";
+          margin-right: 5px; }
   header .account-inactive {
     display: block;
     float: right;

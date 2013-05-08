@@ -4,12 +4,51 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+  titles = {
+    doctor: "Dr.",
+    nurse: "Nurse"
+  };
+
+  User = (function(_super) {
+    __extends(User, _super);
+
+    function User() {
+      _ref = User.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    User.prototype.defaults = {
+      name: "",
+      title: titles.nurse,
+      user_id: null
+    };
+
+    return User;
+
+  })(Backbone.Model);
+
+  strangelove = new User({
+    name: "Strangelove",
+    title: titles.doctor,
+    user_id: 0
+  });
+
+  ratched = new User({
+    name: "Ratched",
+    title: titles.nurse,
+    user_id: 1
+  });
+
+  allUsers = [strangelove, ratched];
+
+  currentUser = strangelove;
+
   Prescription = (function(_super) {
     __extends(Prescription, _super);
 
     function Prescription() {
-      _ref = Prescription.__super__.constructor.apply(this, arguments);
-      return _ref;
+      _ref1 = Prescription.__super__.constructor.apply(this, arguments);
+      return _ref1;
     }
 
     Prescription.prototype.defaults = {
@@ -46,8 +85,8 @@
     __extends(Dose, _super);
 
     function Dose() {
-      _ref1 = Dose.__super__.constructor.apply(this, arguments);
-      return _ref1;
+      _ref2 = Dose.__super__.constructor.apply(this, arguments);
+      return _ref2;
     }
 
     Dose.prototype.defaults = {
@@ -68,8 +107,8 @@
     __extends(Patient, _super);
 
     function Patient() {
-      _ref2 = Patient.__super__.constructor.apply(this, arguments);
-      return _ref2;
+      _ref3 = Patient.__super__.constructor.apply(this, arguments);
+      return _ref3;
     }
 
     Patient.prototype.defaults = {
@@ -102,12 +141,12 @@
 
       doses = _.flatten([
         (function() {
-          var _i, _len, _ref3, _results;
+          var _i, _len, _ref4, _results;
 
-          _ref3 = this.get('prescriptions');
+          _ref4 = this.get('prescriptions');
           _results = [];
-          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-            prescription = _ref3[_i];
+          for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
+            prescription = _ref4[_i];
             if (prescription.get('deleteTime') === null) {
               _results.push(prescription.get('doses'));
             }
@@ -134,12 +173,12 @@
     };
 
     Patient.prototype.giveAllPastDoses = function() {
-      var dose, _i, _len, _ref3, _results;
+      var dose, _i, _len, _ref4, _results;
 
-      _ref3 = this.doses();
+      _ref4 = this.doses();
       _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        dose = _ref3[_i];
+      for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
+        dose = _ref4[_i];
         if (dose.get('scheduledTime') < moment()) {
           _results.push(dose.set('givenTime', dose.get('scheduledTime')));
         } else {
@@ -186,8 +225,8 @@
     __extends(PatientList, _super);
 
     function PatientList() {
-      _ref3 = PatientList.__super__.constructor.apply(this, arguments);
-      return _ref3;
+      _ref4 = PatientList.__super__.constructor.apply(this, arguments);
+      return _ref4;
     }
 
     PatientList.prototype.localStorage = new Backbone.LocalStorage("patients");
@@ -202,8 +241,8 @@
     __extends(PatientListView, _super);
 
     function PatientListView() {
-      _ref4 = PatientListView.__super__.constructor.apply(this, arguments);
-      return _ref4;
+      _ref5 = PatientListView.__super__.constructor.apply(this, arguments);
+      return _ref5;
     }
 
     PatientListView.prototype.el = $('#patients');
@@ -215,13 +254,13 @@
       return this.patientListItemViews = [];
     };
 
-    PatientListView.prototype.rerender = function() {
-      var patientListItemView, _i, _len, _ref5;
+    PatientListView.prototype.rerender = function(user) {
+      var patientListItemView, _i, _len, _ref6;
 
-      _ref5 = this.patientListItemViews;
-      for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
-        patientListItemView = _ref5[_i];
-        patientListItemView.rerender();
+      _ref6 = this.patientListItemViews;
+      for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
+        patientListItemView = _ref6[_i];
+        patientListItemView.rerender(user);
       }
       return this;
     };
@@ -233,7 +272,7 @@
         model: patient
       });
       this.patientListItemViews.push(patientListItemView);
-      return $(this.el).append(patientListItemView.render().el);
+      return $(this.el).append(patientListItemView.render(currentUser).el);
     };
 
     return PatientListView;
@@ -244,8 +283,8 @@
     __extends(PatientListItemView, _super);
 
     function PatientListItemView() {
-      _ref5 = PatientListItemView.__super__.constructor.apply(this, arguments);
-      return _ref5;
+      _ref6 = PatientListItemView.__super__.constructor.apply(this, arguments);
+      return _ref6;
     }
 
     PatientListItemView.prototype.tagName = 'li';
@@ -255,27 +294,30 @@
       return this.doseRowViews = [];
     };
 
-    PatientListItemView.prototype.render = function() {
+    PatientListItemView.prototype.render = function(user) {
       $(this.el).html(_.template($("#list-item-template").html(), {
         patient: this.model
       }));
-      this.rerender();
+      this.rerender(user);
       return this;
     };
 
-    PatientListItemView.prototype.rerender = function() {
-      var dose, doseRowView, _i, _len, _ref6;
+    PatientListItemView.prototype.rerender = function(user) {
+      var dose, doseRowView, _i, _len, _ref7;
 
       $(this.el).find('.doses tbody').empty();
-      _ref6 = this.model.doses();
-      for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-        dose = _ref6[_i];
+      _ref7 = this.model.doses();
+      for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
+        dose = _ref7[_i];
         doseRowView = new DoseRowView({
           model: dose
         });
         this.doseRowViews.push(doseRowView);
         $(this.el).find('.doses tbody').append(doseRowView.render().el);
       }
+      $(this.el).find(".add-prescription-button").html(_.template($("#add-prescription-button-template").html(), {
+        isDoctor: user.attributes.title === titles.doctor
+      }));
       $(this.el).find(".listing").html(_.template($("#patient-listing-template").html(), {
         patient: this.model
       }));
@@ -287,7 +329,8 @@
       }));
       $(this.el).find(".prescription .prescriptions tbody tr:not(.new)").remove();
       $(this.el).find(".prescription .prescriptions tbody").prepend(_.template($("#prescriptions-table-template").html(), {
-        patient: this.model
+        patient: this.model,
+        isDoctor: user.attributes.title === titles.doctor
       }));
       this.setNextDose();
       return this;
@@ -352,13 +395,9 @@
     __extends(PatientDocumentView, _super);
 
     function PatientDocumentView() {
-      _ref6 = PatientDocumentView.__super__.constructor.apply(this, arguments);
-      return _ref6;
+      _ref7 = PatientDocumentView.__super__.constructor.apply(this, arguments);
+      return _ref7;
     }
-
-    PatientDocumentView.prototype.defaults = {
-      user: currentUser
-    };
 
     PatientDocumentView.prototype.el = $('#patient-document');
 
@@ -369,12 +408,14 @@
       return this;
     };
 
-    PatientDocumentView.prototype.render = function(user) {
+    PatientDocumentView.prototype.render = function(user, allUsers) {
+      console.log('rendering doc view:');
       console.log(user);
-      return $(".user-name-header").html(_.template($("#user-name-header-template").html(), {
+      $("#user-name-header").html(_.template($("#user-name-header-template").html(), {
         activeUser: user,
         allUsers: allUsers
       }));
+      return this;
     };
 
     return PatientDocumentView;
@@ -385,8 +426,8 @@
     __extends(DoseRowView, _super);
 
     function DoseRowView() {
-      _ref7 = DoseRowView.__super__.constructor.apply(this, arguments);
-      return _ref7;
+      _ref8 = DoseRowView.__super__.constructor.apply(this, arguments);
+      return _ref8;
     }
 
     DoseRowView.prototype.tagName = 'tr';
@@ -425,42 +466,6 @@
     return DoseRowView;
 
   })(Backbone.View);
-
-  titles = {
-    doctor: "Dr.",
-    nurse: "Nurse"
-  };
-
-  User = (function(_super) {
-    __extends(User, _super);
-
-    function User() {
-      _ref8 = User.__super__.constructor.apply(this, arguments);
-      return _ref8;
-    }
-
-    User.prototype.defaults = {
-      name: "",
-      title: titles.nurse
-    };
-
-    return User;
-
-  })(Backbone.Model);
-
-  strangelove = new User({
-    name: "Strangelove",
-    title: titles.doctor
-  });
-
-  ratched = new User({
-    name: "Ratched",
-    title: titles.nurse
-  });
-
-  allUsers = [strangelove, ratched];
-
-  currentUser = strangelove;
 
   kamran = new Patient({
     name: "Kamran Khan",
@@ -639,6 +644,7 @@
     var patient, patientDocumentView, patientListView, _i, _len;
 
     patientListView = new PatientListView;
+    console.log(currentUser);
     if (patientListView.collection.length === 0) {
       for (_i = 0, _len = testPatients.length; _i < _len; _i++) {
         patient = testPatients[_i];
@@ -646,7 +652,7 @@
       }
     }
     setInterval(function() {
-      patientListView.rerender();
+      patientListView.rerender(currentUser);
       _.each(patientListView.collection.models, function(patient) {
         return patientListView.collection.sync('update', patient);
       });
@@ -654,8 +660,7 @@
     }, 2000);
     sortByName();
     patientDocumentView = new PatientDocumentView;
-    console.log(currentUser);
-    patientDocumentView.render(currentUser);
+    patientDocumentView.render(currentUser, allUsers);
     $("#sort-by-name").click(function(event) {
       event.stopPropagation();
       event.preventDefault();
@@ -688,6 +693,17 @@
       $("#sort-by-name").removeClass("active");
       $(this).addClass("active");
       return sortByUrgency();
+    });
+    $(".account").click(function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      if ($(this).hasClass("active")) {
+        return;
+      }
+      $(".account").removeClass("active");
+      $(this).addClass("active");
+      currentUser = allUsers[$(this).attr('user_id')];
+      return patientListView.rerender(currentUser);
     });
     $(document).on("click", ".not-implemented", {}, function(event) {
       event.stopPropagation();

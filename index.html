@@ -29,18 +29,7 @@
     <header>
       <h1 id="logo">EZ-ICU</h1>
       <span class="subtitle">Medication management made easy.</span>
-      <div class="user-name-header">
-      <script type="text/html" id="user-name-header-template">
-      <% _.each(_.filter(allUsers, function(user) {return user !== activeUser;}),
-        function (user) { %>
-          <span class="account-inactive"> <span class="name">
-          <%= user.get('title') + ' ' + user.get('name') %>
-          </span></span>
-      <% }); %>
-      <span class="account-active">You are currently logged in as <span class="name">
-      <%= activeUser.get('title') + ' ' + activeUser.get('name') %>
-      </span></span>
-      </script>
+      <div id="user-name-header">
       </div>
     </header>
     <section id="patient-list">
@@ -70,6 +59,14 @@
         </div>
       </div>
     </section>
+
+    <script type="text/html" id="user-name-header-template">
+      <% _.each(allUsers, function (user) { %>
+          <span> <a href="#" class="account <% if (user === activeUser) {print('active');} %>" user_id="<%= user.get('user_id')%>">
+          <%= user.get('title') + ' ' + user.get('name') %>
+          </a></span>
+      <% }); %>
+    </script>
 
     <script type="text/html" id="patient-listing-template">
       <div class="portrait">
@@ -148,10 +145,12 @@
           <td><%= prescription.get('endTime').fromNow() %></td>
           <td><% if (prescription.get('deleteTime') !== null) print('Deleted ' + prescription.get('deleteTime').fromNow()); %></td>
           <td>
+          <% if (isDoctor) { %>
               <a href="#" class="remove remove-existing"></a>
             <span class="undo">
               <a href="#" class="undo-link">Undo</a>
             </span>
+            <% } %>
           </td>
         </tr>
       <% }) %>
@@ -236,7 +235,8 @@
                 </tr>
               </tbody>
             </table>
-            <a href="#" class="add-prescription button">Add prescription</a>
+            <div class="add-prescription-button">
+            </div>
           </div>
           <div class="administration">
             <table class="doses">
@@ -253,6 +253,12 @@
           </div>
         </div>
       </div>
+    </script>
+
+    <script type="text/html" id="add-prescription-button-template">
+      <% if (isDoctor) { %>
+        <a href="#" class="add-prescription button">Add prescription</a>
+      <% } %>
     </script>
 
     <script type="text/html" id="dose-row-template">
